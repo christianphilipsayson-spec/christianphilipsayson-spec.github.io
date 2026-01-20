@@ -11,13 +11,6 @@ const PortfolioWebsite = () => {
   const [showViewerModal, setShowViewerModal] = useState(false);
   const [currentDoc, setCurrentDoc] = useState(null);
   const [editingDoc, setEditingDoc] = useState(null);
-  
-  const [formData, setFormData] = useState({
-    title: '',
-    category: 'achievements',
-    description: '',
-    content: ''
-  });
 
   const PASSWORD = 'admin123';
 
@@ -46,22 +39,14 @@ const PortfolioWebsite = () => {
         if (docsData?.value) {
           setDocuments(JSON.parse(docsData.value));
         } else {
+          // Initialize with sample data
           const sampleDocs = [
             {
               id: 1,
               title: "Bachelor's Degree Certificate",
               category: 'achievements',
               description: 'BS Computer Technology - Graduated with Honors',
-              content: "BACHELOR'S DEGREE CERTIFICATE\n\nThis certifies that\nCHRISTIAN PHILIP SAYSON\n\nHas successfully completed the degree of\nBachelor of Science in Computer Technology\n\nAwarded: May 2025\nUniversity Name\n\nGraduated with HONORS\nGPA: 3.85/4.0",
-              fileType: 'text',
-              date: new Date().toISOString()
-            },
-            {
-              id: 2,
-              title: "Professional Resume",
-              category: 'resume',
-              description: 'Current professional resume - Updated 2026',
-              content: "CHRISTIAN PHILIP SAYSON\nComputer Technology Graduate\n\nCONTACT:\nEmail: christian.sayson@gmail.com\nPhone: +63 912 345 6789\nLocation: Consolacion, Cebu, Philippines\n\nEDUCATION:\nBachelor of Science in Computer Technology\nUniversity Name (2025)\nGPA: 3.85/4.0\n\nSKILLS:\n- Programming: Python, Java, JavaScript\n- Web Development: HTML, CSS, React\n- Database Management: SQL, MongoDB\n- Problem Solving & Critical Thinking",
+              content: 'Sample certificate content...',
               fileType: 'text',
               date: new Date().toISOString()
             }
@@ -114,12 +99,24 @@ const PortfolioWebsite = () => {
 
     const reader = new FileReader();
     reader.onload = async (event) => {
-      setFormData(prev => ({
-        ...prev,
-        content: event.target.result,
+      const newDoc = {
+        id: Date.now(),
+        title: editingDoc?.title || file.name,
+        category: editingDoc?.category || 'achievements',
+        description: editingDoc?.description || '',
+        fileName: file.name,
         fileType: file.type.includes('pdf') ? 'pdf' : 'text',
-        fileName: file.name
-      }));
+        content: event.target.result,
+        date: new Date().toISOString()
+      };
+
+      const updatedDocs = editingDoc 
+        ? documents.map(d => d.id === editingDoc.id ? newDoc : d)
+        : [...documents, newDoc];
+      
+      await saveDocuments(updatedDocs);
+      setShowUploadModal(false);
+      setEditingDoc(null);
     };
 
     if (file.type === 'application/pdf') {
@@ -129,21 +126,18 @@ const PortfolioWebsite = () => {
     }
   };
 
-  // Submit document
-  const handleDocSubmit = async () => {
-    if (!formData.title || !formData.content) {
-      alert('Please fill in title and content');
-      return;
-    }
-
+  // Add/Edit document
+  const handleDocSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    
     const doc = {
       id: editingDoc?.id || Date.now(),
-      title: formData.title,
-      category: formData.category,
-      description: formData.description,
-      content: formData.content,
-      fileType: formData.fileType || 'text',
-      fileName: formData.fileName,
+      title: formData.get('title'),
+      category: formData.get('category'),
+      description: formData.get('description'),
+      content: formData.get('content'),
+      fileType: 'text',
       date: new Date().toISOString()
     };
 
@@ -154,7 +148,6 @@ const PortfolioWebsite = () => {
     await saveDocuments(updatedDocs);
     setShowUploadModal(false);
     setEditingDoc(null);
-    setFormData({ title: '', category: 'achievements', description: '', content: '' });
   };
 
   // Delete document
@@ -163,25 +156,6 @@ const PortfolioWebsite = () => {
       const updatedDocs = documents.filter(d => d.id !== id);
       await saveDocuments(updatedDocs);
     }
-  };
-
-  // Open edit modal
-  const openEditModal = (doc = null) => {
-    if (doc) {
-      setEditingDoc(doc);
-      setFormData({
-        title: doc.title,
-        category: doc.category,
-        description: doc.description,
-        content: doc.content,
-        fileType: doc.fileType,
-        fileName: doc.fileName
-      });
-    } else {
-      setEditingDoc(null);
-      setFormData({ title: '', category: 'achievements', description: '', content: '' });
-    }
-    setShowUploadModal(true);
   };
 
   // Filter documents
@@ -239,18 +213,18 @@ const PortfolioWebsite = () => {
               {isEditMode ? (
                 <>
                   <input
-                    className="text-3xl font-bold mb-2 w-full border-b-2 border-blue-300 focus:border-blue-500 outline-none bg-transparent"
+                    className="text-3xl font-bold mb-2 w-full border-b-2 border-blue-300 focus:border-blue-500 outline-none"
                     value={profile.name}
                     onChange={(e) => saveProfile({...profile, name: e.target.value})}
                   />
                   <input
-                    className="text-xl text-gray-600 mb-4 w-full border-b border-gray-300 focus:border-blue-500 outline-none bg-transparent"
+                    className="text-xl text-gray-600 mb-4 w-full border-b border-gray-300 focus:border-blue-500 outline-none"
                     value={profile.title}
                     onChange={(e) => saveProfile({...profile, title: e.target.value})}
                   />
                   <textarea
                     className="text-gray-700 leading-relaxed mb-4 w-full border rounded-lg p-2 focus:border-blue-500 outline-none"
-                    rows={3}
+                    rows="3"
                     value={profile.bio}
                     onChange={(e) => saveProfile({...profile, bio: e.target.value})}
                   />
@@ -268,7 +242,7 @@ const PortfolioWebsite = () => {
                   <Mail className="w-4 h-4 text-blue-500" />
                   {isEditMode ? (
                     <input
-                      className="text-sm flex-1 border-b border-gray-300 focus:border-blue-500 outline-none bg-transparent"
+                      className="text-sm flex-1 border-b border-gray-300 focus:border-blue-500 outline-none"
                       value={profile.email}
                       onChange={(e) => saveProfile({...profile, email: e.target.value})}
                     />
@@ -280,7 +254,7 @@ const PortfolioWebsite = () => {
                   <Phone className="w-4 h-4 text-blue-500" />
                   {isEditMode ? (
                     <input
-                      className="text-sm flex-1 border-b border-gray-300 focus:border-blue-500 outline-none bg-transparent"
+                      className="text-sm flex-1 border-b border-gray-300 focus:border-blue-500 outline-none"
                       value={profile.phone}
                       onChange={(e) => saveProfile({...profile, phone: e.target.value})}
                     />
@@ -292,7 +266,7 @@ const PortfolioWebsite = () => {
                   <MapPin className="w-4 h-4 text-blue-500" />
                   {isEditMode ? (
                     <input
-                      className="text-sm flex-1 border-b border-gray-300 focus:border-blue-500 outline-none bg-transparent"
+                      className="text-sm flex-1 border-b border-gray-300 focus:border-blue-500 outline-none"
                       value={profile.location}
                       onChange={(e) => saveProfile({...profile, location: e.target.value})}
                     />
@@ -320,7 +294,10 @@ const PortfolioWebsite = () => {
             </div>
             {isEditMode && (
               <button
-                onClick={() => openEditModal()}
+                onClick={() => {
+                  setEditingDoc(null);
+                  setShowUploadModal(true);
+                }}
                 className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:shadow-lg transition-all flex items-center gap-2 whitespace-nowrap"
               >
                 <Plus className="w-5 h-5" />
@@ -389,7 +366,10 @@ const PortfolioWebsite = () => {
                   {isEditMode && (
                     <>
                       <button
-                        onClick={() => openEditModal(doc)}
+                        onClick={() => {
+                          setEditingDoc(doc);
+                          setShowUploadModal(true);
+                        }}
                         className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-all"
                       >
                         <Edit2 className="w-4 h-4" />
@@ -420,7 +400,7 @@ const PortfolioWebsite = () => {
       {showLogin && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl">
-            <h2 className="text-2xl font-bold mb-6 text-gray-800">🔒 Admin Login</h2>
+            <h2 className="text-2xl font-bold mb-6 text-gray-800">Admin Login</h2>
             <input
               type="password"
               placeholder="Enter password"
@@ -443,7 +423,6 @@ const PortfolioWebsite = () => {
                 Cancel
               </button>
             </div>
-            <p className="text-xs text-gray-500 mt-4 text-center">Default password: admin123</p>
           </div>
         </div>
       )}
@@ -456,22 +435,22 @@ const PortfolioWebsite = () => {
               {editingDoc ? 'Edit Document' : 'Add New Document'}
             </h2>
             
-            <div className="space-y-4">
-              <div>
+            <form onSubmit={handleDocSubmit}>
+              <div className="mb-4">
                 <label className="block text-sm font-semibold mb-2 text-gray-700">Title *</label>
                 <input
-                  value={formData.title}
-                  onChange={(e) => setFormData({...formData, title: e.target.value})}
+                  name="title"
+                  defaultValue={editingDoc?.title}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                  placeholder="Enter document title"
+                  required
                 />
               </div>
 
-              <div>
+              <div className="mb-4">
                 <label className="block text-sm font-semibold mb-2 text-gray-700">Category *</label>
                 <select
-                  value={formData.category}
-                  onChange={(e) => setFormData({...formData, category: e.target.value})}
+                  name="category"
+                  defaultValue={editingDoc?.category || 'achievements'}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                 >
                   <option value="achievements">Achievements</option>
@@ -481,17 +460,16 @@ const PortfolioWebsite = () => {
                 </select>
               </div>
 
-              <div>
+              <div className="mb-4">
                 <label className="block text-sm font-semibold mb-2 text-gray-700">Description</label>
                 <input
-                  value={formData.description}
-                  onChange={(e) => setFormData({...formData, description: e.target.value})}
+                  name="description"
+                  defaultValue={editingDoc?.description}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                  placeholder="Brief description"
                 />
               </div>
 
-              <div>
+              <div className="mb-4">
                 <label className="block text-sm font-semibold mb-2 text-gray-700">Upload File (PDF or Text)</label>
                 <input
                   type="file"
@@ -502,37 +480,37 @@ const PortfolioWebsite = () => {
                 <p className="text-xs text-gray-500 mt-1">Or write content below</p>
               </div>
 
-              <div>
+              <div className="mb-6">
                 <label className="block text-sm font-semibold mb-2 text-gray-700">Content *</label>
                 <textarea
-                  value={formData.content}
-                  onChange={(e) => setFormData({...formData, content: e.target.value})}
-                  rows={10}
+                  name="content"
+                  defaultValue={editingDoc?.content}
+                  rows="10"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm"
-                  placeholder="Enter document content..."
+                  required
                 />
               </div>
 
-              <div className="flex gap-3 pt-4">
+              <div className="flex gap-3">
                 <button
-                  onClick={handleDocSubmit}
+                  type="submit"
                   className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:shadow-lg transition-all flex items-center justify-center gap-2"
                 >
                   <Save className="w-4 h-4" />
                   Save Document
                 </button>
                 <button
+                  type="button"
                   onClick={() => {
                     setShowUploadModal(false);
                     setEditingDoc(null);
-                    setFormData({ title: '', category: 'achievements', description: '', content: '' });
                   }}
                   className="px-4 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all"
                 >
                   Cancel
                 </button>
               </div>
-            </div>
+            </form>
           </div>
         </div>
       )}
@@ -555,7 +533,7 @@ const PortfolioWebsite = () => {
               {currentDoc.fileType === 'pdf' ? (
                 <iframe
                   src={currentDoc.content}
-                  className="w-full h-full min-h-[600px] rounded-lg border-2 border-gray-200"
+                  className="w-full h-full min-h-[600px] rounded-lg"
                   title={currentDoc.title}
                 />
               ) : (

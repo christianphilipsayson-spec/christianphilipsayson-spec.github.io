@@ -12,183 +12,315 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
+            animation: fadeIn 0.8s ease-in;
         }
 
-        .profile-section {
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Admin Login Modal */
+        .login-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .login-box {
             background: white;
-            border-radius: 16px;
             padding: 40px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             text-align: center;
+            max-width: 400px;
+            width: 90%;
         }
 
-        .profile-image-container {
-            margin-bottom: 25px;
+        .login-box h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .login-btn:hover {
+            background: #5568d3;
+        }
+
+        .cancel-btn {
+            background: #6c757d;
+            margin-top: 10px;
+        }
+
+        .cancel-btn:hover {
+            background: #5a6268;
+        }
+
+        /* Admin Bar */
+        .admin-bar {
+            background: white;
+            padding: 15px 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .admin-badge {
+            background: #28a745;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            padding: 8px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .logout-btn:hover {
+            background: #c82333;
+        }
+
+        /* Edit Mode Button */
+        .edit-mode-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #667eea;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(102,126,234,0.5);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .edit-mode-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(102,126,234,0.6);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: white;
+            border-radius: 24px;
+            padding: 50px 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .profile-image-wrapper {
             position: relative;
-            display: inline-block;
         }
 
-        .profile-image {
-            width: 150px;
-            height: 150px;
+        .profile-image, .profile-placeholder {
+            width: 180px;
+            height: 180px;
             border-radius: 50%;
             object-fit: cover;
-            border: 5px solid #667eea;
-            cursor: pointer;
+            border: 6px solid #667eea;
+            box-shadow: 0 10px 30px rgba(102,126,234,0.4);
         }
 
         .profile-placeholder {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
             background: #f0f0f0;
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 5px solid #667eea;
+        }
+
+        .upload-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(102,126,234,0.8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
             cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .profile-image-wrapper:hover .upload-overlay {
+            opacity: 1;
+        }
+
+        .hero-text h1 {
+            font-size: 42px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .hero-text .title {
+            font-size: 22px;
+            color: #667eea;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .hero-text .bio {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .editable-field {
+            border: 2px solid transparent;
+            padding: 8px;
+            border-radius: 8px;
             transition: all 0.3s;
         }
 
-        .profile-placeholder:hover {
-            background: #e0e0e0;
+        .editable-field:hover {
+            background: #f8f9fa;
         }
 
-        .upload-profile-text {
-            color: #667eea;
-            font-size: 14px;
-            margin-top: 10px;
-            cursor: pointer;
-        }
-
-        .name-input {
-            font-size: 32px;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 10px;
-            border: none;
-            background: transparent;
-            text-align: center;
-            width: 100%;
-            padding: 10px;
-        }
-
-        .name-input:focus {
-            outline: 2px solid #667eea;
-            border-radius: 8px;
-        }
-
-        .title-input {
-            font-size: 20px;
-            color: #667eea;
-            margin-bottom: 20px;
-            border: none;
-            background: transparent;
-            text-align: center;
-            width: 100%;
-            padding: 8px;
-        }
-
-        .title-input:focus {
-            outline: 2px solid #667eea;
-            border-radius: 8px;
-        }
-
-        .bio-textarea {
-            width: 100%;
-            min-height: 100px;
-            padding: 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 16px;
-            line-height: 1.6;
-            color: #666;
-            resize: vertical;
-            font-family: inherit;
-        }
-
-        .bio-textarea:focus {
-            outline: none;
+        .editable-field.editing {
             border-color: #667eea;
+            background: white;
         }
 
-        .save-profile-btn {
-            background: #667eea;
-            color: white;
-            padding: 12px 30px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-top: 15px;
-            transition: background 0.3s;
+        .contact-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
         }
 
-        .save-profile-btn:hover {
-            background: #5568d3;
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 10px;
         }
 
+        .contact-item svg {
+            width: 20px;
+            height: 20px;
+            stroke: #667eea;
+        }
+
+        /* Documents Section */
         .documents-section {
             background: white;
-            border-radius: 16px;
-            padding: 30px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
 
         .section-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
             flex-wrap: wrap;
             gap: 15px;
         }
 
-        h2 {
-            font-size: 24px;
+        .section-header h2 {
+            font-size: 28px;
             color: #333;
         }
 
-        .upload-doc-btn {
+        .add-doc-btn {
             background: #667eea;
             color: white;
-            padding: 10px 20px;
+            padding: 12px 24px;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
             font-size: 14px;
-            transition: background 0.3s;
+            font-weight: 600;
+            transition: all 0.3s;
         }
 
-        .upload-doc-btn:hover {
+        .add-doc-btn:hover {
             background: #5568d3;
+            transform: translateY(-2px);
         }
 
         .filter-tabs {
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 12px;
+            margin-bottom: 30px;
             flex-wrap: wrap;
         }
 
         .tab {
-            padding: 8px 16px;
+            padding: 10px 20px;
             border: 2px solid #e0e0e0;
             background: white;
             border-radius: 20px;
             cursor: pointer;
             transition: all 0.3s;
             font-size: 14px;
+            font-weight: 600;
             color: #666;
         }
 
@@ -205,27 +337,33 @@
 
         .documents-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
         }
 
         .doc-card {
             background: #f8f9fa;
-            border-radius: 12px;
-            padding: 20px;
-            transition: transform 0.2s, box-shadow 0.2s;
+            border-radius: 16px;
+            padding: 25px;
+            transition: all 0.3s;
             border: 2px solid transparent;
+            position: relative;
         }
 
         .doc-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 10px 30px rgba(102,126,234,0.3);
             border-color: #667eea;
         }
 
-        .doc-icon {
-            width: 48px;
-            height: 48px;
+        .doc-icon-wrapper {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             margin-bottom: 15px;
         }
 
@@ -233,17 +371,25 @@
             font-weight: 600;
             color: #333;
             margin-bottom: 8px;
-            word-break: break-word;
+            font-size: 16px;
         }
 
         .doc-category {
             display: inline-block;
-            padding: 4px 12px;
+            padding: 6px 14px;
             background: #667eea;
             color: white;
-            border-radius: 12px;
-            font-size: 12px;
-            margin-bottom: 10px;
+            border-radius: 16px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .doc-description {
+            color: #666;
+            font-size: 14px;
+            margin-top: 10px;
+            line-height: 1.6;
         }
 
         .doc-actions {
@@ -252,22 +398,23 @@
             margin-top: 15px;
         }
 
-        .btn-download, .btn-delete {
+        .btn-edit, .btn-delete {
             flex: 1;
             padding: 8px;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 13px;
+            font-weight: 600;
             transition: all 0.3s;
         }
 
-        .btn-download {
+        .btn-edit {
             background: #667eea;
             color: white;
         }
 
-        .btn-download:hover {
+        .btn-edit:hover {
             background: #5568d3;
         }
 
@@ -280,30 +427,99 @@
             background: #c82333;
         }
 
+        .view-only-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #28a745;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
         .empty-state {
             text-align: center;
             padding: 60px 20px;
             color: #999;
-        }
-
-        .empty-state-icon {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 20px;
-            opacity: 0.3;
+            grid-column: 1 / -1;
         }
 
         input[type="file"] {
             display: none;
         }
 
-        @media (max-width: 768px) {
-            .profile-section, .documents-section {
-                padding: 20px;
-            }
+        /* Modal for adding documents */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
 
-            .name-input {
-                font-size: 24px;
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .modal-content h3 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+            font-weight: 600;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .modal-actions button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
             }
 
             .documents-grid {
@@ -313,65 +529,184 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="profile-section">
-            <div class="profile-image-container">
-                <div class="profile-placeholder" id="profilePlaceholder" onclick="document.getElementById('profileImageInput').click()">
-                    <svg class="icon" style="width:60px;height:60px" viewBox="0 0 24 24" fill="none" stroke="#667eea" stroke-width="2">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="12" cy="7" r="4"></circle>
-                    </svg>
-                </div>
-                <img id="profileImage" class="profile-image" style="display: none;" onclick="document.getElementById('profileImageInput').click()">
-                <input type="file" id="profileImageInput" accept="image/*">
-                <div class="upload-profile-text">Click to upload photo</div>
-            </div>
-
-            <input type="text" class="name-input" id="nameInput" placeholder="Your Name" value="Christian Philip Sayson">
-            <input type="text" class="title-input" id="titleInput" placeholder="Your Title" value="Technologist | Computer Technology Graduate">
-            
-            <textarea class="bio-textarea" id="bioTextarea" placeholder="Tell visitors about yourself...">Passionate technologist with a degree in Computer Technology. I specialize in building innovative solutions and leveraging technology to solve real-world problems. Explore my achievements, applications, and resume below.</textarea>
-            
-            <button class="save-profile-btn" onclick="saveProfile()">Save Profile</button>
+    <!-- Login Modal -->
+    <div class="login-modal" id="loginModal" style="display: none;">
+        <div class="login-box">
+            <h2>🔒 Admin Access</h2>
+            <p style="color: #666; margin-bottom: 20px;">Enter password to edit portfolio</p>
+            <input type="password" id="passwordInput" class="login-input" placeholder="Enter password" />
+            <button class="login-btn" onclick="login()">Login</button>
+            <button class="login-btn cancel-btn" onclick="closeLogin()">Cancel</button>
         </div>
+    </div>
 
-        <div class="documents-section">
-            <div class="section-header">
-                <h2>My Documents</h2>
-                <label for="documentInput" class="upload-doc-btn">+ Upload Document</label>
-                <input type="file" id="documentInput" multiple>
+    <!-- Add Document Modal -->
+    <div class="modal" id="addDocModal" style="display: none;">
+        <div class="modal-content">
+            <h3>Add New Document</h3>
+            <div class="form-group">
+                <label>Document Name *</label>
+                <input type="text" id="docName" placeholder="e.g., Bachelor's Degree Certificate" />
             </div>
-
-            <div class="filter-tabs">
-                <div class="tab active" data-category="all" onclick="filterDocuments('all')">All</div>
-                <div class="tab" data-category="resume" onclick="filterDocuments('resume')">Resume</div>
-                <div class="tab" data-category="achievements" onclick="filterDocuments('achievements')">Achievements</div>
-                <div class="tab" data-category="applications" onclick="filterDocuments('applications')">Applications</div>
-                <div class="tab" data-category="certificates" onclick="filterDocuments('certificates')">Certificates</div>
-                <div class="tab" data-category="other" onclick="filterDocuments('other')">Other</div>
+            <div class="form-group">
+                <label>Category *</label>
+                <select id="docCategory">
+                    <option value="achievements">Achievements</option>
+                    <option value="certificates">Certificates</option>
+                    <option value="resume">Resume</option>
+                    <option value="applications">Applications</option>
+                    <option value="research">Research Project</option>
+                </select>
             </div>
-
-            <div class="documents-grid" id="documentsGrid">
-                <div class="empty-state">
-                    <svg class="empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
-                        <polyline points="13 2 13 9 20 9"></polyline>
-                    </svg>
-                    <p>No documents yet. Upload your first document!</p>
-                </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="docDescription" placeholder="Brief description of this document..."></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="login-btn" onclick="saveDocument()">Add Document</button>
+                <button class="login-btn cancel-btn" onclick="closeDocModal()">Cancel</button>
             </div>
         </div>
     </div>
 
+    <div class="container">
+        <!-- Admin Bar (only visible in edit mode) -->
+        <div class="admin-bar" id="adminBar" style="display: none;">
+            <div class="admin-badge">✏️ Edit Mode Active</div>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+
+        <!-- Edit Mode Button (only visible in view mode) -->
+        <button class="edit-mode-btn" id="editModeBtn" onclick="showLogin()">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+        </button>
+
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <div class="hero-content">
+                <div class="profile-image-wrapper">
+                    <div class="profile-placeholder" id="profilePlaceholder">
+                        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#667eea" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </div>
+                    <img id="profileImage" class="profile-image" style="display: none;" />
+                    <div class="upload-overlay" id="uploadOverlay" style="display: none;" onclick="document.getElementById('profileInput').click()">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                    </div>
+                    <input type="file" id="profileInput" accept="image/*" />
+                </div>
+                <div class="hero-text">
+                    <h1 class="editable-field" id="nameField" contenteditable="false">Christian Philip Sayson</h1>
+                    <div class="title editable-field" id="titleField" contenteditable="false">Computer Technology Graduate | Technologist</div>
+                    <p class="bio editable-field" id="bioField" contenteditable="false">
+                        Passionate about technology and innovation. Dedicated to creating solutions that make a difference. Explore my academic achievements, professional certifications, and research projects below.
+                    </p>
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                            <span class="editable-field" id="emailField" contenteditable="false">christian.sayson@gmail.com</span>
+                        </div>
+                        <div class="contact-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                            </svg>
+                            <span class="editable-field" id="phoneField" contenteditable="false">+63 912 345 6789</span>
+                        </div>
+                        <div class="contact-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                            <span class="editable-field" id="locationField" contenteditable="false">Consolacion, Cebu, Philippines</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Documents Section -->
+        <div class="documents-section">
+            <div class="section-header">
+                <h2>📂 My Portfolio</h2>
+                <button class="add-doc-btn" id="addDocBtn" style="display: none;" onclick="showDocModal()">+ Add Document</button>
+            </div>
+
+            <div class="filter-tabs">
+                <div class="tab active" data-category="all" onclick="filterDocs('all')">All</div>
+                <div class="tab" data-category="achievements" onclick="filterDocs('achievements')">Achievements</div>
+                <div class="tab" data-category="certificates" onclick="filterDocs('certificates')">Certificates</div>
+                <div class="tab" data-category="resume" onclick="filterDocs('resume')">Resume</div>
+                <div class="tab" data-category="applications" onclick="filterDocs('applications')">Applications</div>
+                <div class="tab" data-category="research" onclick="filterDocs('research')">Research Project</div>
+            </div>
+
+            <div class="documents-grid" id="docsGrid"></div>
+        </div>
+    </div>
+
     <script>
+        let isEditMode = false;
         let currentFilter = 'all';
-        
+        const ADMIN_PASSWORD = 'admin123'; // Change this to your secure password
+
+        // Sample documents - these will be saved to localStorage
+        const defaultDocuments = [
+            {
+                id: 1,
+                name: "Bachelor's Degree in Computer Technology",
+                category: "achievements",
+                description: "Graduated with honors from XYZ University, majoring in Computer Technology"
+            },
+            {
+                id: 2,
+                name: "Python Programming Certificate",
+                category: "certificates",
+                description: "Certified in Python programming by Coursera"
+            },
+            {
+                id: 3,
+                name: "Professional Resume",
+                category: "resume",
+                description: "Updated resume highlighting technical skills and experience"
+            },
+            {
+                id: 4,
+                name: "Job Application - Software Developer",
+                category: "applications",
+                description: "Application for Software Developer position at Tech Company"
+            },
+            {
+                id: 5,
+                name: "Capstone Research: AI in Agriculture",
+                category: "research",
+                description: "Research project on implementing AI solutions for smart farming"
+            }
+        ];
+
+        // Initialize
         window.onload = function() {
+            if (!localStorage.getItem('documents')) {
+                localStorage.setItem('documents', JSON.stringify(defaultDocuments));
+            }
             loadProfile();
-            loadDocuments();
+            renderDocs();
         };
 
-        document.getElementById('profileImageInput').addEventListener('change', function(e) {
+        // Profile image upload
+        document.getElementById('profileInput').addEventListener('change', function(e) {
+            if (!isEditMode) return;
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
@@ -387,27 +722,89 @@
             }
         });
 
+        function showLogin() {
+            document.getElementById('loginModal').style.display = 'flex';
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('passwordInput').focus();
+        }
+
+        function closeLogin() {
+            document.getElementById('loginModal').style.display = 'none';
+        }
+
+        function login() {
+            const password = document.getElementById('passwordInput').value;
+            if (password === ADMIN_PASSWORD) {
+                isEditMode = true;
+                closeLogin();
+                enableEditMode();
+            } else {
+                alert('❌ Incorrect password!');
+            }
+        }
+
+        function logout() {
+            isEditMode = false;
+            disableEditMode();
+            saveProfile();
+        }
+
+        function enableEditMode() {
+            document.getElementById('adminBar').style.display = 'flex';
+            document.getElementById('editModeBtn').style.display = 'none';
+            document.getElementById('addDocBtn').style.display = 'block';
+            document.getElementById('uploadOverlay').style.display = 'flex';
+            
+            // Make fields editable
+            document.querySelectorAll('.editable-field').forEach(field => {
+                field.contentEditable = 'true';
+                field.classList.add('editing');
+            });
+            
+            renderDocs();
+        }
+
+        function disableEditMode() {
+            document.getElementById('adminBar').style.display = 'none';
+            document.getElementById('editModeBtn').style.display = 'flex';
+            document.getElementById('addDocBtn').style.display = 'none';
+            document.getElementById('uploadOverlay').style.display = 'none';
+            
+            // Make fields non-editable
+            document.querySelectorAll('.editable-field').forEach(field => {
+                field.contentEditable = 'false';
+                field.classList.remove('editing');
+            });
+            
+            renderDocs();
+        }
+
         function saveProfile() {
-            const name = document.getElementById('nameInput').value;
-            const title = document.getElementById('titleInput').value;
-            const bio = document.getElementById('bioTextarea').value;
-            
-            localStorage.setItem('profileName', name);
-            localStorage.setItem('profileTitle', title);
-            localStorage.setItem('profileBio', bio);
-            
-            alert('Profile saved successfully!');
+            localStorage.setItem('profileName', document.getElementById('nameField').textContent);
+            localStorage.setItem('profileTitle', document.getElementById('titleField').textContent);
+            localStorage.setItem('profileBio', document.getElementById('bioField').textContent);
+            localStorage.setItem('profileEmail', document.getElementById('emailField').textContent);
+            localStorage.setItem('profilePhone', document.getElementById('phoneField').textContent);
+            localStorage.setItem('profileLocation', document.getElementById('locationField').textContent);
         }
 
         function loadProfile() {
-            const name = localStorage.getItem('profileName');
-            const title = localStorage.getItem('profileTitle');
-            const bio = localStorage.getItem('profileBio');
+            const fields = {
+                'nameField': localStorage.getItem('profileName'),
+                'titleField': localStorage.getItem('profileTitle'),
+                'bioField': localStorage.getItem('profileBio'),
+                'emailField': localStorage.getItem('profileEmail'),
+                'phoneField': localStorage.getItem('profilePhone'),
+                'locationField': localStorage.getItem('profileLocation'),
+            };
+
+            Object.keys(fields).forEach(key => {
+                if (fields[key]) {
+                    document.getElementById(key).textContent = fields[key];
+                }
+            });
+
             const image = localStorage.getItem('profileImage');
-            
-            if (name) document.getElementById('nameInput').value = name;
-            if (title) document.getElementById('titleInput').value = title;
-            if (bio) document.getElementById('bioTextarea').value = bio;
             if (image) {
                 const img = document.getElementById('profileImage');
                 const placeholder = document.getElementById('profilePlaceholder');
@@ -417,118 +814,110 @@
             }
         }
 
-        document.getElementById('documentInput').addEventListener('change', function(e) {
-            const files = Array.from(e.target.files);
-            
-            files.forEach(file => {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const doc = {
-                        id: Date.now() + Math.random(),
-                        name: file.name,
-                        category: 'other',
-                        size: file.size,
-                        type: file.type,
-                        content: event.target.result,
-                        uploadDate: new Date().toISOString()
-                    };
-                    
-                    const fileName = file.name.toLowerCase();
-                    if (fileName.includes('resume') || fileName.includes('cv')) {
-                        doc.category = 'resume';
-                    } else if (fileName.includes('certificate') || fileName.includes('cert')) {
-                        doc.category = 'certificates';
-                    } else if (fileName.includes('achievement') || fileName.includes('award')) {
-                        doc.category = 'achievements';
-                    } else if (fileName.includes('application') || fileName.includes('form')) {
-                        doc.category = 'applications';
-                    }
-                    
-                    saveDocument(doc);
-                };
-                reader.readAsDataURL(file);
-            });
-            
-            e.target.value = '';
-        });
-
-        function saveDocument(doc) {
-            let documents = JSON.parse(localStorage.getItem('documents') || '[]');
-            documents.push(doc);
-            localStorage.setItem('documents', JSON.stringify(documents));
-            loadDocuments();
+        function showDocModal() {
+            if (!isEditMode) return;
+            document.getElementById('addDocModal').style.display = 'flex';
+            document.getElementById('docName').value = '';
+            document.getElementById('docDescription').value = '';
         }
 
-        function loadDocuments() {
-            const documents = JSON.parse(localStorage.getItem('documents') || '[]');
-            const grid = document.getElementById('documentsGrid');
-            
-            const filtered = currentFilter === 'all' 
-                ? documents 
-                : documents.filter(doc => doc.category === currentFilter);
-            
-            if (filtered.length === 0) {
-                grid.innerHTML = `
-                    <div class="empty-state">
-                        <svg class="empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
-                            <polyline points="13 2 13 9 20 9"></polyline>
-                        </svg>
-                        <p>No documents in this category yet.</p>
-                    </div>
-                `;
+        function closeDocModal() {
+            document.getElementById('addDocModal').style.display = 'none';
+        }
+
+        function saveDocument() {
+            const name = document.getElementById('docName').value.trim();
+            const category = document.getElementById('docCategory').value;
+            const description = document.getElementById('docDescription').value.trim();
+
+            if (!name) {
+                alert('Please enter a document name');
                 return;
             }
-            
-            grid.innerHTML = filtered.map(doc => `
-                <div class="doc-card">
-                    <svg class="doc-icon" viewBox="0 0 24 24" fill="none" stroke="#667eea" stroke-width="2">
-                        <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
-                        <polyline points="13 2 13 9 20 9"></polyline>
-                    </svg>
-                    <div class="doc-name">${doc.name}</div>
-                    <div class="doc-category">${doc.category}</div>
-                    <div class="doc-actions">
-                        <button class="btn-download" onclick="downloadDocument(${doc.id})">Download</button>
-                        <button class="btn-delete" onclick="deleteDocument(${doc.id})">Delete</button>
-                    </div>
-                </div>
-            `).join('');
+
+            const documents = JSON.parse(localStorage.getItem('documents') || '[]');
+            const newDoc = {
+                id: Date.now(),
+                name,
+                category,
+                description
+            };
+
+            documents.push(newDoc);
+            localStorage.setItem('documents', JSON.stringify(documents));
+            closeDocModal();
+            renderDocs();
         }
 
-        function filterDocuments(category) {
+        function deleteDocument(id) {
+            if (!isEditMode) return;
+            if (confirm('Are you sure you want to delete this document?')) {
+                let documents = JSON.parse(localStorage.getItem('documents') || '[]');
+                documents = documents.filter(d => d.id !== id);
+                localStorage.setItem('documents', JSON.stringify(documents));
+                renderDocs();
+            }
+        }
+
+        function filterDocs(category) {
             currentFilter = category;
-            
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.classList.remove('active');
                 if (tab.dataset.category === category) {
                     tab.classList.add('active');
                 }
             });
-            
-            loadDocuments();
+            renderDocs();
         }
 
-        function downloadDocument(id) {
+        function renderDocs() {
             const documents = JSON.parse(localStorage.getItem('documents') || '[]');
-            const doc = documents.find(d => d.id === id);
+            const grid = document.getElementById('docsGrid');
             
-            if (doc) {
-                const link = document.createElement('a');
-                link.href = doc.content;
-                link.download = doc.name;
-                link.click();
+            const filtered = currentFilter === 'all' 
+                ? documents 
+                : documents.filter(doc => doc.category === currentFilter);
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+                            <polyline points="13 2 13 9 20 9"></polyline>
+                        </svg>
+                        <p>No documents in this category</p>
+                    </div>
+                `;
+                return;
             }
+
+            grid.innerHTML = filtered.map(doc => `
+                <div class="doc-card">
+                    ${!isEditMode ? '<div class="view-only-badge">👁️ View Only</div>' : ''}
+                    <div class="doc-icon-wrapper">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                            <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+                            <polyline points="13 2 13 9 20 9"></polyline>
+                        </svg>
+                    </div>
+                    <div class="doc-name">${doc.name}</div>
+                    <div class="doc-category">${doc.category}</div>
+                    <div class="doc-description">${doc.description || 'No description'}</div>
+                    ${isEditMode ? `
+                        <div class="doc-actions">
+                            <button class="btn-delete" onclick="deleteDocument(${doc.id})">🗑️ Delete</button>
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
         }
 
-        function deleteDocument(id) {
-            if (confirm('Are you sure you want to delete this document?')) {
-                let documents = JSON.parse(localStorage.getItem('documents') || '[]');
-                documents = documents.filter(d => d.id !== id);
-                localStorage.setItem('documents', JSON.stringify(documents));
-                loadDocuments();
+        // Allow Enter key to login
+        document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                login();
             }
-        }
+        });
     </script>
 </body>
 </html>

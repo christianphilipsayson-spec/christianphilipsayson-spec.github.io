@@ -12,517 +12,390 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
             padding: 20px;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1000px;
             margin: 0 auto;
-            animation: fadeIn 0.8s ease-in;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Admin Login Modal */
-        .login-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-
-        .login-box {
-            background: white;
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-        }
-
-        .login-box h2 {
-            margin-bottom: 20px;
-            color: #333;
-        }
-
-        .login-input {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 16px;
-        }
-
-        .login-btn {
-            width: 100%;
-            padding: 12px;
-            background: #667eea;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        .login-btn:hover {
-            background: #5568d3;
-        }
-
-        .cancel-btn {
-            background: #6c757d;
-            margin-top: 10px;
-        }
-
-        .cancel-btn:hover {
-            background: #5a6268;
-        }
-
-        /* Admin Bar */
-        .admin-bar {
-            background: white;
-            padding: 15px 30px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        .admin-badge {
-            background: #28a745;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        .logout-btn {
-            background: #dc3545;
-            color: white;
-            padding: 8px 20px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .logout-btn:hover {
-            background: #c82333;
-        }
-
-        /* Edit Mode Button */
-        .edit-mode-btn {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: #667eea;
-            color: white;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 5px 20px rgba(102,126,234,0.5);
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
-        }
-
-        .edit-mode-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 8px 25px rgba(102,126,234,0.6);
-        }
-
-        /* Hero Section */
-        .hero-section {
-            background: white;
-            border-radius: 24px;
-            padding: 50px 40px;
-            margin-bottom: 30px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
-
-        .hero-content {
-            display: grid;
-            grid-template-columns: auto 1fr;
-            gap: 40px;
-            align-items: center;
-        }
-
-        .profile-image-wrapper {
-            position: relative;
-        }
-
-        .profile-image, .profile-placeholder {
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 6px solid #667eea;
-            box-shadow: 0 10px 30px rgba(102,126,234,0.4);
-        }
-
-        .profile-placeholder {
-            background: #f0f0f0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .upload-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(102,126,234,0.8);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            cursor: pointer;
-            transition: opacity 0.3s;
-        }
-
-        .profile-image-wrapper:hover .upload-overlay {
-            opacity: 1;
-        }
-
-        .hero-text h1 {
-            font-size: 42px;
-            color: #333;
-            margin-bottom: 10px;
-        }
-
-        .hero-text .title {
-            font-size: 22px;
-            color: #667eea;
-            margin-bottom: 20px;
-            font-weight: 600;
-        }
-
-        .hero-text .bio {
-            font-size: 16px;
-            line-height: 1.8;
-            color: #666;
-            margin-bottom: 25px;
-        }
-
-        .editable-field {
-            border: 2px solid transparent;
-            padding: 8px;
-            border-radius: 8px;
-            transition: all 0.3s;
-        }
-
-        .editable-field:hover {
-            background: #f8f9fa;
-        }
-
-        .editable-field.editing {
-            border-color: #667eea;
-            background: white;
-        }
-
-        .contact-info {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .contact-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px;
-            background: #f8f9fa;
-            border-radius: 10px;
-        }
-
-        .contact-item svg {
-            width: 20px;
-            height: 20px;
-            stroke: #667eea;
-        }
-
-        /* Documents Section */
-        .documents-section {
-            background: white;
-            border-radius: 24px;
-            padding: 40px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
-
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .section-header h2 {
-            font-size: 28px;
-            color: #333;
-        }
-
-        .add-doc-btn {
-            background: #667eea;
-            color: white;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .add-doc-btn:hover {
-            background: #5568d3;
-            transform: translateY(-2px);
-        }
-
-        .filter-tabs {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-
-        .tab {
-            padding: 10px 20px;
-            border: 2px solid #e0e0e0;
-            background: white;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 14px;
-            font-weight: 600;
-            color: #666;
-        }
-
-        .tab:hover {
-            border-color: #667eea;
-            color: #667eea;
-        }
-
-        .tab.active {
-            background: #667eea;
-            color: white;
-            border-color: #667eea;
-        }
-
-        .documents-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 25px;
-        }
-
-        .doc-card {
-            background: #f8f9fa;
-            border-radius: 16px;
-            padding: 25px;
-            transition: all 0.3s;
-            border: 2px solid transparent;
-            position: relative;
-        }
-
-        .doc-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(102,126,234,0.3);
-            border-color: #667eea;
-        }
-
-        .doc-icon-wrapper {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 15px;
-        }
-
-        .doc-name {
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 8px;
-            font-size: 16px;
-        }
-
-        .doc-category {
-            display: inline-block;
-            padding: 6px 14px;
-            background: #667eea;
-            color: white;
-            border-radius: 16px;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .doc-description {
-            color: #666;
-            font-size: 14px;
-            margin-top: 10px;
-            line-height: 1.6;
-        }
-
-        .doc-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .btn-edit, .btn-delete {
-            flex: 1;
-            padding: 8px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .btn-edit {
-            background: #667eea;
-            color: white;
-        }
-
-        .btn-edit:hover {
-            background: #5568d3;
-        }
-
-        .btn-delete {
-            background: #dc3545;
-            color: white;
-        }
-
-        .btn-delete:hover {
-            background: #c82333;
-        }
-
-        .view-only-badge {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: #28a745;
-            color: white;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 10px;
-            font-weight: 600;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #999;
-            grid-column: 1 / -1;
-        }
-
-        input[type="file"] {
-            display: none;
-        }
-
-        /* Modal for adding documents */
+        /* Login Modal */
         .modal {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.7);
-            display: flex;
+            background: rgba(0,0,0,0.8);
+            display: none;
             align-items: center;
             justify-content: center;
             z-index: 1000;
         }
 
+        .modal.show {
+            display: flex;
+        }
+
         .modal-content {
             background: white;
             padding: 30px;
-            border-radius: 16px;
-            max-width: 500px;
+            border-radius: 10px;
             width: 90%;
+            max-width: 400px;
+            text-align: center;
         }
 
-        .modal-content h3 {
+        .modal-content h2 {
             margin-bottom: 20px;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .modal-content button {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #777;
+            color: white;
+        }
+
+        /* Admin Bar */
+        .admin-bar {
+            background: #4CAF50;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-bar.show {
+            display: flex;
+        }
+
+        .admin-bar button {
+            background: white;
+            color: #4CAF50;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* Edit Button */
+        .edit-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #4CAF50;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            z-index: 100;
+        }
+
+        .edit-btn.hide {
+            display: none;
+        }
+
+        /* Profile Section */
+        .profile {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .profile h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+
+        .profile .title {
+            color: #666;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .profile .bio {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .profile .contact {
+            color: #4CAF50;
+            margin: 5px 0;
+        }
+
+        .editable {
+            border: 2px solid transparent;
+            padding: 5px;
+            border-radius: 3px;
+        }
+
+        .editable.edit-mode {
+            border-color: #4CAF50;
+            background: #f9f9f9;
+        }
+
+        .editable:focus {
+            outline: none;
+        }
+
+        /* Documents Section */
+        .documents {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-header h2 {
             color: #333;
         }
 
+        .add-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            display: none;
+        }
+
+        .add-btn.show {
+            display: block;
+        }
+
+        .docs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .doc-card {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .doc-card:hover {
+            border-color: #4CAF50;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .doc-card h3 {
+            color: #333;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .doc-card .category {
+            background: #4CAF50;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 3px;
+            font-size: 12px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .doc-card .desc {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .doc-card .actions {
+            display: none;
+            gap: 10px;
+        }
+
+        .doc-card .actions.show {
+            display: flex;
+        }
+
+        .doc-card button {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .btn-edit {
+            background: #FFA500;
+            color: white;
+        }
+
+        .btn-delete {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-view {
+            background: #4CAF50;
+            color: white;
+            width: 100%;
+            padding: 8px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Document Viewer */
+        .viewer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+
+        .viewer.show {
+            display: flex;
+        }
+
+        .viewer-box {
+            background: white;
+            width: 100%;
+            max-width: 800px;
+            max-height: 90vh;
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .viewer-header {
+            background: #4CAF50;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .viewer-header h3 {
+            font-size: 20px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .viewer-body {
+            padding: 30px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .viewer-body pre {
+            white-space: pre-wrap;
+            color: #333;
+            line-height: 1.6;
+            font-family: Arial, sans-serif;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        /* Form */
         .form-group {
             margin-bottom: 15px;
+            text-align: left;
         }
 
         .form-group label {
             display: block;
             margin-bottom: 5px;
-            color: #666;
-            font-weight: 600;
+            font-weight: bold;
+            color: #333;
         }
 
-        .form-group input, .form-group textarea, .form-group select {
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
             width: 100%;
             padding: 10px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
             font-size: 14px;
         }
 
         .form-group textarea {
-            min-height: 80px;
-            resize: vertical;
-        }
-
-        .modal-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .modal-actions button {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
+            min-height: 150px;
+            font-family: Arial, sans-serif;
         }
 
         @media (max-width: 768px) {
-            .hero-content {
-                grid-template-columns: 1fr;
-                text-align: center;
-            }
-
-            .documents-grid {
+            .docs-grid {
                 grid-template-columns: 1fr;
             }
         }
@@ -530,23 +403,22 @@
 </head>
 <body>
     <!-- Login Modal -->
-    <div class="login-modal" id="loginModal" style="display: none;">
-        <div class="login-box">
-            <h2>🔒 Admin Access</h2>
-            <p style="color: #666; margin-bottom: 20px;">Enter password to edit portfolio</p>
-            <input type="password" id="passwordInput" class="login-input" placeholder="Enter password" />
-            <button class="login-btn" onclick="login()">Login</button>
-            <button class="login-btn cancel-btn" onclick="closeLogin()">Cancel</button>
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <h2>🔒 Admin Login</h2>
+            <input type="password" id="password" placeholder="Enter password" />
+            <button class="btn-primary" onclick="login()">Login</button>
+            <button class="btn-secondary" onclick="closeLogin()">Cancel</button>
         </div>
     </div>
 
-    <!-- Add Document Modal -->
-    <div class="modal" id="addDocModal" style="display: none;">
-        <div class="modal-content">
-            <h3>Add New Document</h3>
+    <!-- Document Form Modal -->
+    <div class="modal" id="docFormModal">
+        <div class="modal-content" style="max-width: 500px;">
+            <h2 id="formTitle">Add Document</h2>
             <div class="form-group">
-                <label>Document Name *</label>
-                <input type="text" id="docName" placeholder="e.g., Bachelor's Degree Certificate" />
+                <label>Title *</label>
+                <input type="text" id="docTitle" placeholder="Document title" />
             </div>
             <div class="form-group">
                 <label>Category *</label>
@@ -555,368 +427,304 @@
                     <option value="certificates">Certificates</option>
                     <option value="resume">Resume</option>
                     <option value="applications">Applications</option>
-                    <option value="research">Research Project</option>
+                    <option value="research">Research</option>
                 </select>
             </div>
             <div class="form-group">
-                <label>Description</label>
-                <textarea id="docDescription" placeholder="Brief description of this document..."></textarea>
+                <label>Short Description</label>
+                <input type="text" id="docDesc" placeholder="Brief description" />
             </div>
-            <div class="modal-actions">
-                <button class="login-btn" onclick="saveDocument()">Add Document</button>
-                <button class="login-btn cancel-btn" onclick="closeDocModal()">Cancel</button>
+            <div class="form-group">
+                <label>Full Content *</label>
+                <textarea id="docContent" placeholder="The full text that viewers will read..."></textarea>
+            </div>
+            <button class="btn-primary" onclick="saveDoc()">Save</button>
+            <button class="btn-secondary" onclick="closeDocForm()">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Document Viewer -->
+    <div class="viewer" id="viewer">
+        <div class="viewer-box">
+            <div class="viewer-header">
+                <h3 id="viewerTitle">Document</h3>
+                <button class="close-btn" onclick="closeViewer()">×</button>
+            </div>
+            <div class="viewer-body">
+                <pre id="viewerContent"></pre>
             </div>
         </div>
     </div>
 
+    <!-- Main Content -->
     <div class="container">
-        <!-- Admin Bar (only visible in edit mode) -->
-        <div class="admin-bar" id="adminBar" style="display: none;">
-            <div class="admin-badge">✏️ Edit Mode Active</div>
-            <button class="logout-btn" onclick="logout()">Logout</button>
+        <!-- Admin Bar -->
+        <div class="admin-bar" id="adminBar">
+            <span>✏️ Edit Mode - Click on text to edit</span>
+            <button onclick="logout()">Logout</button>
         </div>
 
-        <!-- Edit Mode Button (only visible in view mode) -->
-        <button class="edit-mode-btn" id="editModeBtn" onclick="showLogin()">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-            </svg>
-        </button>
+        <!-- Edit Button -->
+        <button class="edit-btn" id="editBtn" onclick="showLogin()">✏️</button>
 
-        <!-- Hero Section -->
-        <div class="hero-section">
-            <div class="hero-content">
-                <div class="profile-image-wrapper">
-                    <div class="profile-placeholder" id="profilePlaceholder">
-                        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#667eea" stroke-width="2">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="12" cy="7" r="4"></circle>
-                        </svg>
-                    </div>
-                    <img id="profileImage" class="profile-image" style="display: none;" />
-                    <div class="upload-overlay" id="uploadOverlay" style="display: none;" onclick="document.getElementById('profileInput').click()">
-                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="17 8 12 3 7 8"></polyline>
-                            <line x1="12" y1="3" x2="12" y2="15"></line>
-                        </svg>
-                    </div>
-                    <input type="file" id="profileInput" accept="image/*" />
-                </div>
-                <div class="hero-text">
-                    <h1 class="editable-field" id="nameField" contenteditable="false">Christian Philip Sayson</h1>
-                    <div class="title editable-field" id="titleField" contenteditable="false">Computer Technology Graduate | Technologist</div>
-                    <p class="bio editable-field" id="bioField" contenteditable="false">
-                        Passionate about technology and innovation. Dedicated to creating solutions that make a difference. Explore my academic achievements, professional certifications, and research projects below.
-                    </p>
-                    <div class="contact-info">
-                        <div class="contact-item">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                                <polyline points="22,6 12,13 2,6"></polyline>
-                            </svg>
-                            <span class="editable-field" id="emailField" contenteditable="false">christian.sayson@gmail.com</span>
-                        </div>
-                        <div class="contact-item">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                            </svg>
-                            <span class="editable-field" id="phoneField" contenteditable="false">+63 912 345 6789</span>
-                        </div>
-                        <div class="contact-item">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                                <circle cx="12" cy="10" r="3"></circle>
-                            </svg>
-                            <span class="editable-field" id="locationField" contenteditable="false">Consolacion, Cebu, Philippines</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <!-- Profile Section -->
+        <div class="profile">
+            <h1 class="editable" id="name" contenteditable="false">Christian Philip Sayson</h1>
+            <div class="title editable" id="title" contenteditable="false">Computer Technology Graduate</div>
+            <p class="bio editable" id="bio" contenteditable="false">Passionate about technology and innovation. Explore my achievements, certificates, and research projects below.</p>
+            <div class="contact editable" id="email" contenteditable="false">📧 christian.sayson@gmail.com</div>
+            <div class="contact editable" id="phone" contenteditable="false">📱 +63 912 345 6789</div>
+            <div class="contact editable" id="location" contenteditable="false">📍 Consolacion, Cebu, Philippines</div>
         </div>
 
         <!-- Documents Section -->
-        <div class="documents-section">
+        <div class="documents">
             <div class="section-header">
-                <h2>📂 My Portfolio</h2>
-                <button class="add-doc-btn" id="addDocBtn" style="display: none;" onclick="showDocModal()">+ Add Document</button>
+                <h2>📁 My Documents</h2>
+                <button class="add-btn" id="addBtn" onclick="showDocForm()">+ Add Document</button>
             </div>
-
-            <div class="filter-tabs">
-                <div class="tab active" data-category="all" onclick="filterDocs('all')">All</div>
-                <div class="tab" data-category="achievements" onclick="filterDocs('achievements')">Achievements</div>
-                <div class="tab" data-category="certificates" onclick="filterDocs('certificates')">Certificates</div>
-                <div class="tab" data-category="resume" onclick="filterDocs('resume')">Resume</div>
-                <div class="tab" data-category="applications" onclick="filterDocs('applications')">Applications</div>
-                <div class="tab" data-category="research" onclick="filterDocs('research')">Research Project</div>
-            </div>
-
-            <div class="documents-grid" id="docsGrid"></div>
+            <div class="docs-grid" id="docsGrid"></div>
         </div>
     </div>
 
     <script>
+        const PASSWORD = 'admin123'; // ⚠️ CHANGE THIS!
         let isEditMode = false;
-        let currentFilter = 'all';
-        const ADMIN_PASSWORD = 'admin123'; // Change this to your secure password
+        let editingId = null;
 
-        // Sample documents - these will be saved to localStorage
-        const defaultDocuments = [
+        // Sample data
+        const defaultDocs = [
             {
                 id: 1,
-                name: "Bachelor's Degree in Computer Technology",
+                title: "Bachelor's Degree Certificate",
                 category: "achievements",
-                description: "Graduated with honors from XYZ University, majoring in Computer Technology"
+                description: "Computer Technology degree with honors",
+                content: "BACHELOR'S DEGREE CERTIFICATE\n\nThis certifies that\nCHRISTIAN PHILIP SAYSON\n\nHas successfully completed the degree of\nBachelor of Science in Computer Technology\n\nAwarded: May 2025\nXYZ University, Philippines\n\nGraduated with HONORS\nGPA: 3.85/4.0"
             },
             {
                 id: 2,
-                name: "Python Programming Certificate",
+                title: "Python Certificate",
                 category: "certificates",
-                description: "Certified in Python programming by Coursera"
+                description: "Advanced Python programming",
+                content: "PYTHON PROGRAMMING CERTIFICATE\n\nCompleted by: Christian Philip Sayson\nCourse: Advanced Python & Data Analysis\nPlatform: Coursera\nScore: 98/100\nDate: December 2024"
             },
             {
                 id: 3,
-                name: "Professional Resume",
+                title: "Professional Resume",
                 category: "resume",
-                description: "Updated resume highlighting technical skills and experience"
-            },
-            {
-                id: 4,
-                name: "Job Application - Software Developer",
-                category: "applications",
-                description: "Application for Software Developer position at Tech Company"
-            },
-            {
-                id: 5,
-                name: "Capstone Research: AI in Agriculture",
-                category: "research",
-                description: "Research project on implementing AI solutions for smart farming"
+                description: "Updated 2026 resume",
+                content: "CHRISTIAN PHILIP SAYSON\nComputer Technology Graduate\n\nCONTACT:\nEmail: christian.sayson@gmail.com\nPhone: +63 912 345 6789\nLocation: Cebu, Philippines\n\nEDUCATION:\nBS Computer Technology\nXYZ University (2025)\nGPA: 3.85/4.0\n\nSKILLS:\n- Python, Java, JavaScript\n- Web Development\n- Database Management\n- Problem Solving"
             }
         ];
 
         // Initialize
         window.onload = function() {
-            if (!localStorage.getItem('documents')) {
-                localStorage.setItem('documents', JSON.stringify(defaultDocuments));
+            if (!localStorage.getItem('portfolio_docs')) {
+                localStorage.setItem('portfolio_docs', JSON.stringify(defaultDocs));
             }
             loadProfile();
-            renderDocs();
+            loadDocs();
         };
 
-        // Profile image upload
-        document.getElementById('profileInput').addEventListener('change', function(e) {
+        // Save profile when editing
+        function saveProfile() {
             if (!isEditMode) return;
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const img = document.getElementById('profileImage');
-                    const placeholder = document.getElementById('profilePlaceholder');
-                    img.src = event.target.result;
-                    img.style.display = 'block';
-                    placeholder.style.display = 'none';
-                    localStorage.setItem('profileImage', event.target.result);
-                };
-                reader.readAsDataURL(file);
-            }
-        });
+            const data = {
+                name: document.getElementById('name').textContent,
+                title: document.getElementById('title').textContent,
+                bio: document.getElementById('bio').textContent,
+                email: document.getElementById('email').textContent,
+                phone: document.getElementById('phone').textContent,
+                location: document.getElementById('location').textContent
+            };
+            localStorage.setItem('portfolio_profile', JSON.stringify(data));
+        }
 
+        // Load profile
+        function loadProfile() {
+            const saved = localStorage.getItem('portfolio_profile');
+            if (saved) {
+                const data = JSON.parse(saved);
+                document.getElementById('name').textContent = data.name;
+                document.getElementById('title').textContent = data.title;
+                document.getElementById('bio').textContent = data.bio;
+                document.getElementById('email').textContent = data.email;
+                document.getElementById('phone').textContent = data.phone;
+                document.getElementById('location').textContent = data.location;
+            }
+        }
+
+        // Login
         function showLogin() {
-            document.getElementById('loginModal').style.display = 'flex';
-            document.getElementById('passwordInput').value = '';
-            document.getElementById('passwordInput').focus();
+            document.getElementById('loginModal').classList.add('show');
+            document.getElementById('password').value = '';
+            document.getElementById('password').focus();
         }
 
         function closeLogin() {
-            document.getElementById('loginModal').style.display = 'none';
+            document.getElementById('loginModal').classList.remove('show');
         }
 
         function login() {
-            const password = document.getElementById('passwordInput').value;
-            if (password === ADMIN_PASSWORD) {
+            const pwd = document.getElementById('password').value;
+            if (pwd === PASSWORD) {
                 isEditMode = true;
                 closeLogin();
                 enableEditMode();
             } else {
-                alert('❌ Incorrect password!');
+                alert('Wrong password!');
             }
         }
 
         function logout() {
             isEditMode = false;
-            disableEditMode();
             saveProfile();
+            disableEditMode();
         }
 
         function enableEditMode() {
-            document.getElementById('adminBar').style.display = 'flex';
-            document.getElementById('editModeBtn').style.display = 'none';
-            document.getElementById('addDocBtn').style.display = 'block';
-            document.getElementById('uploadOverlay').style.display = 'flex';
+            document.getElementById('adminBar').classList.add('show');
+            document.getElementById('editBtn').classList.add('hide');
+            document.getElementById('addBtn').classList.add('show');
             
-            // Make fields editable
-            document.querySelectorAll('.editable-field').forEach(field => {
-                field.contentEditable = 'true';
-                field.classList.add('editing');
+            document.querySelectorAll('.editable').forEach(el => {
+                el.contentEditable = 'true';
+                el.classList.add('edit-mode');
+                el.addEventListener('blur', saveProfile);
             });
             
-            renderDocs();
+            loadDocs();
         }
 
         function disableEditMode() {
-            document.getElementById('adminBar').style.display = 'none';
-            document.getElementById('editModeBtn').style.display = 'flex';
-            document.getElementById('addDocBtn').style.display = 'none';
-            document.getElementById('uploadOverlay').style.display = 'none';
+            document.getElementById('adminBar').classList.remove('show');
+            document.getElementById('editBtn').classList.remove('hide');
+            document.getElementById('addBtn').classList.remove('show');
             
-            // Make fields non-editable
-            document.querySelectorAll('.editable-field').forEach(field => {
-                field.contentEditable = 'false';
-                field.classList.remove('editing');
+            document.querySelectorAll('.editable').forEach(el => {
+                el.contentEditable = 'false';
+                el.classList.remove('edit-mode');
             });
             
-            renderDocs();
+            loadDocs();
         }
 
-        function saveProfile() {
-            localStorage.setItem('profileName', document.getElementById('nameField').textContent);
-            localStorage.setItem('profileTitle', document.getElementById('titleField').textContent);
-            localStorage.setItem('profileBio', document.getElementById('bioField').textContent);
-            localStorage.setItem('profileEmail', document.getElementById('emailField').textContent);
-            localStorage.setItem('profilePhone', document.getElementById('phoneField').textContent);
-            localStorage.setItem('profileLocation', document.getElementById('locationField').textContent);
-        }
-
-        function loadProfile() {
-            const fields = {
-                'nameField': localStorage.getItem('profileName'),
-                'titleField': localStorage.getItem('profileTitle'),
-                'bioField': localStorage.getItem('profileBio'),
-                'emailField': localStorage.getItem('profileEmail'),
-                'phoneField': localStorage.getItem('profilePhone'),
-                'locationField': localStorage.getItem('profileLocation'),
-            };
-
-            Object.keys(fields).forEach(key => {
-                if (fields[key]) {
-                    document.getElementById(key).textContent = fields[key];
-                }
-            });
-
-            const image = localStorage.getItem('profileImage');
-            if (image) {
-                const img = document.getElementById('profileImage');
-                const placeholder = document.getElementById('profilePlaceholder');
-                img.src = image;
-                img.style.display = 'block';
-                placeholder.style.display = 'none';
-            }
-        }
-
-        function showDocModal() {
-            if (!isEditMode) return;
-            document.getElementById('addDocModal').style.display = 'flex';
-            document.getElementById('docName').value = '';
-            document.getElementById('docDescription').value = '';
-        }
-
-        function closeDocModal() {
-            document.getElementById('addDocModal').style.display = 'none';
-        }
-
-        function saveDocument() {
-            const name = document.getElementById('docName').value.trim();
-            const category = document.getElementById('docCategory').value;
-            const description = document.getElementById('docDescription').value.trim();
-
-            if (!name) {
-                alert('Please enter a document name');
-                return;
-            }
-
-            const documents = JSON.parse(localStorage.getItem('documents') || '[]');
-            const newDoc = {
-                id: Date.now(),
-                name,
-                category,
-                description
-            };
-
-            documents.push(newDoc);
-            localStorage.setItem('documents', JSON.stringify(documents));
-            closeDocModal();
-            renderDocs();
-        }
-
-        function deleteDocument(id) {
-            if (!isEditMode) return;
-            if (confirm('Are you sure you want to delete this document?')) {
-                let documents = JSON.parse(localStorage.getItem('documents') || '[]');
-                documents = documents.filter(d => d.id !== id);
-                localStorage.setItem('documents', JSON.stringify(documents));
-                renderDocs();
-            }
-        }
-
-        function filterDocs(category) {
-            currentFilter = category;
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active');
-                if (tab.dataset.category === category) {
-                    tab.classList.add('active');
-                }
-            });
-            renderDocs();
-        }
-
-        function renderDocs() {
-            const documents = JSON.parse(localStorage.getItem('documents') || '[]');
+        // Documents
+        function loadDocs() {
+            const docs = JSON.parse(localStorage.getItem('portfolio_docs') || '[]');
             const grid = document.getElementById('docsGrid');
             
-            const filtered = currentFilter === 'all' 
-                ? documents 
-                : documents.filter(doc => doc.category === currentFilter);
-
-            if (filtered.length === 0) {
-                grid.innerHTML = `
-                    <div class="empty-state">
-                        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
-                            <polyline points="13 2 13 9 20 9"></polyline>
-                        </svg>
-                        <p>No documents in this category</p>
-                    </div>
-                `;
+            if (docs.length === 0) {
+                grid.innerHTML = '<div class="empty-state">No documents yet</div>';
                 return;
             }
-
-            grid.innerHTML = filtered.map(doc => `
-                <div class="doc-card">
-                    ${!isEditMode ? '<div class="view-only-badge">👁️ View Only</div>' : ''}
-                    <div class="doc-icon-wrapper">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-                            <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
-                            <polyline points="13 2 13 9 20 9"></polyline>
-                        </svg>
-                    </div>
-                    <div class="doc-name">${doc.name}</div>
-                    <div class="doc-category">${doc.category}</div>
-                    <div class="doc-description">${doc.description || 'No description'}</div>
+            
+            grid.innerHTML = docs.map(doc => `
+                <div class="doc-card" onclick="${isEditMode ? '' : `viewDoc(${doc.id})`}">
+                    <h3>${doc.title}</h3>
+                    <div class="category">${doc.category}</div>
+                    <div class="desc">${doc.description || ''}</div>
                     ${isEditMode ? `
-                        <div class="doc-actions">
-                            <button class="btn-delete" onclick="deleteDocument(${doc.id})">🗑️ Delete</button>
+                        <div class="actions show">
+                            <button class="btn-edit" onclick="event.stopPropagation(); editDoc(${doc.id})">Edit</button>
+                            <button class="btn-delete" onclick="event.stopPropagation(); deleteDoc(${doc.id})">Delete</button>
                         </div>
-                    ` : ''}
+                    ` : `
+                        <button class="btn-view" onclick="viewDoc(${doc.id})">Open & Read</button>
+                    `}
                 </div>
             `).join('');
         }
 
-        // Allow Enter key to login
-        document.getElementById('passwordInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                login();
+        function showDocForm(id = null) {
+            editingId = id;
+            const modal = document.getElementById('docFormModal');
+            
+            if (id) {
+                const docs = JSON.parse(localStorage.getItem('portfolio_docs') || '[]');
+                const doc = docs.find(d => d.id === id);
+                document.getElementById('formTitle').textContent = 'Edit Document';
+                document.getElementById('docTitle').value = doc.title;
+                document.getElementById('docCategory').value = doc.category;
+                document.getElementById('docDesc').value = doc.description;
+                document.getElementById('docContent').value = doc.content;
+            } else {
+                document.getElementById('formTitle').textContent = 'Add Document';
+                document.getElementById('docTitle').value = '';
+                document.getElementById('docCategory').value = 'achievements';
+                document.getElementById('docDesc').value = '';
+                document.getElementById('docContent').value = '';
             }
+            
+            modal.classList.add('show');
+        }
+
+        function closeDocForm() {
+            document.getElementById('docFormModal').classList.remove('show');
+            editingId = null;
+        }
+
+        function saveDoc() {
+            const title = document.getElementById('docTitle').value.trim();
+            const content = document.getElementById('docContent').value.trim();
+            
+            if (!title || !content) {
+                alert('Please fill in title and content');
+                return;
+            }
+            
+            const doc = {
+                id: editingId || Date.now(),
+                title: title,
+                category: document.getElementById('docCategory').value,
+                description: document.getElementById('docDesc').value.trim(),
+                content: content
+            };
+            
+            let docs = JSON.parse(localStorage.getItem('portfolio_docs') || '[]');
+            
+            if (editingId) {
+                docs = docs.map(d => d.id === editingId ? doc : d);
+            } else {
+                docs.push(doc);
+            }
+            
+            localStorage.setItem('portfolio_docs', JSON.stringify(docs));
+            closeDocForm();
+            loadDocs();
+        }
+
+        function editDoc(id) {
+            showDocForm(id);
+        }
+
+        function deleteDoc(id) {
+            if (confirm('Delete this document?')) {
+                let docs = JSON.parse(localStorage.getItem('portfolio_docs') || '[]');
+                docs = docs.filter(d => d.id !== id);
+                localStorage.setItem('portfolio_docs', JSON.stringify(docs));
+                loadDocs();
+            }
+        }
+
+        function viewDoc(id) {
+            const docs = JSON.parse(localStorage.getItem('portfolio_docs') || '[]');
+            const doc = docs.find(d => d.id === id);
+            
+            if (doc) {
+                document.getElementById('viewerTitle').textContent = doc.title;
+                document.getElementById('viewerContent').textContent = doc.content;
+                document.getElementById('viewer').classList.add('show');
+            }
+        }
+
+        function closeViewer() {
+            document.getElementById('viewer').classList.remove('show');
+        }
+
+        // Enter key to login
+        document.getElementById('password').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') login();
         });
     </script>
 </body>

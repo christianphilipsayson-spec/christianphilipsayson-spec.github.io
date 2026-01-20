@@ -1,731 +1,574 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Christian Philip Sayson - Portfolio</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+import React, { useState, useEffect } from 'react';
+import { Upload, FileText, Award, GraduationCap, Briefcase, Search, Edit2, Trash2, X, Save, User, Mail, Phone, MapPin, Plus, Eye, Download } from 'lucide-react';
+
+const PortfolioWebsite = () => {
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
+  const [password, setPassword] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [showUploadModal, setShowUploadModal] = useState(false);
+  const [showViewerModal, setShowViewerModal] = useState(false);
+  const [currentDoc, setCurrentDoc] = useState(null);
+  const [editingDoc, setEditingDoc] = useState(null);
+  
+  const [formData, setFormData] = useState({
+    title: '',
+    category: 'achievements',
+    description: '',
+    content: ''
+  });
+
+  const PASSWORD = 'admin123';
+
+  const [profile, setProfile] = useState({
+    name: 'Christian Philip Sayson',
+    title: 'Computer Technology Graduate',
+    bio: 'Passionate about technology and innovation. Dedicated to creating impactful solutions and continuously learning new technologies.',
+    email: 'christian.sayson@gmail.com',
+    phone: '+63 912 345 6789',
+    location: 'Consolacion, Cebu, Philippines',
+    image: '👤'
+  });
+
+  const [documents, setDocuments] = useState([]);
+
+  // Load data from storage
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const profileData = await window.storage.get('portfolio_profile');
+        const docsData = await window.storage.get('portfolio_documents');
+        
+        if (profileData?.value) {
+          setProfile(JSON.parse(profileData.value));
         }
-
-        body {
-            font-family: Arial, sans-serif;
-            background: #f5f5f5;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        /* Login Modal */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-
-        .modal.show {
-            display: flex;
-        }
-
-        .modal-content {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-        }
-
-        .modal-content h2 {
-            margin-bottom: 20px;
-        }
-
-        .modal-content input {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-
-        .modal-content button {
-            width: 100%;
-            padding: 10px;
-            margin: 5px 0;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        .btn-primary {
-            background: #4CAF50;
-            color: white;
-        }
-
-        .btn-secondary {
-            background: #777;
-            color: white;
-        }
-
-        /* Admin Bar */
-        .admin-bar {
-            background: #4CAF50;
-            color: white;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            display: none;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .admin-bar.show {
-            display: flex;
-        }
-
-        .admin-bar button {
-            background: white;
-            color: #4CAF50;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        /* Edit Button */
-        .edit-btn {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: #4CAF50;
-            color: white;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-            z-index: 100;
-        }
-
-        .edit-btn.hide {
-            display: none;
-        }
-
-        /* Profile Section */
-        .profile {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .profile h1 {
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 32px;
-        }
-
-        .profile .title {
-            color: #666;
-            font-size: 18px;
-            margin-bottom: 15px;
-        }
-
-        .profile .bio {
-            color: #555;
-            line-height: 1.6;
-            margin-bottom: 15px;
-        }
-
-        .profile .contact {
-            color: #4CAF50;
-            margin: 5px 0;
-        }
-
-        .editable {
-            border: 2px solid transparent;
-            padding: 5px;
-            border-radius: 3px;
-        }
-
-        .editable.edit-mode {
-            border-color: #4CAF50;
-            background: #f9f9f9;
-        }
-
-        .editable:focus {
-            outline: none;
-        }
-
-        /* Documents Section */
-        .documents {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .section-header h2 {
-            color: #333;
-        }
-
-        .add-btn {
-            background: #4CAF50;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            display: none;
-        }
-
-        .add-btn.show {
-            display: block;
-        }
-
-        .docs-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .doc-card {
-            background: #f9f9f9;
-            padding: 20px;
-            border-radius: 8px;
-            border: 2px solid #ddd;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .doc-card:hover {
-            border-color: #4CAF50;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-
-        .doc-card h3 {
-            color: #333;
-            font-size: 16px;
-            margin-bottom: 8px;
-        }
-
-        .doc-card .category {
-            background: #4CAF50;
-            color: white;
-            padding: 4px 10px;
-            border-radius: 3px;
-            font-size: 12px;
-            display: inline-block;
-            margin-bottom: 10px;
-        }
-
-        .doc-card .desc {
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 15px;
-        }
-
-        .doc-card .actions {
-            display: none;
-            gap: 10px;
-        }
-
-        .doc-card .actions.show {
-            display: flex;
-        }
-
-        .doc-card button {
-            flex: 1;
-            padding: 8px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 13px;
-        }
-
-        .btn-edit {
-            background: #FFA500;
-            color: white;
-        }
-
-        .btn-delete {
-            background: #f44336;
-            color: white;
-        }
-
-        .btn-view {
-            background: #4CAF50;
-            color: white;
-            width: 100%;
-            padding: 8px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        /* Document Viewer */
-        .viewer {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-            padding: 20px;
-        }
-
-        .viewer.show {
-            display: flex;
-        }
-
-        .viewer-box {
-            background: white;
-            width: 100%;
-            max-width: 800px;
-            max-height: 90vh;
-            border-radius: 10px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .viewer-header {
-            background: #4CAF50;
-            color: white;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .viewer-header h3 {
-            font-size: 20px;
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 30px;
-            cursor: pointer;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .viewer-body {
-            padding: 30px;
-            overflow-y: auto;
-            flex: 1;
-        }
-
-        .viewer-body pre {
-            white-space: pre-wrap;
-            color: #333;
-            line-height: 1.6;
-            font-family: Arial, sans-serif;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 40px;
-            color: #999;
-        }
-
-        /* Form */
-        .form-group {
-            margin-bottom: 15px;
-            text-align: left;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-
-        .form-group textarea {
-            min-height: 150px;
-            font-family: Arial, sans-serif;
-        }
-
-        @media (max-width: 768px) {
-            .docs-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
-</head>
-<body>
-    <!-- Login Modal -->
-    <div class="modal" id="loginModal">
-        <div class="modal-content">
-            <h2>🔒 Admin Login</h2>
-            <input type="password" id="password" placeholder="Enter password" />
-            <button class="btn-primary" onclick="login()">Login</button>
-            <button class="btn-secondary" onclick="closeLogin()">Cancel</button>
-        </div>
-    </div>
-
-    <!-- Document Form Modal -->
-    <div class="modal" id="docFormModal">
-        <div class="modal-content" style="max-width: 500px;">
-            <h2 id="formTitle">Add Document</h2>
-            <div class="form-group">
-                <label>Title *</label>
-                <input type="text" id="docTitle" placeholder="Document title" />
-            </div>
-            <div class="form-group">
-                <label>Category *</label>
-                <select id="docCategory">
-                    <option value="achievements">Achievements</option>
-                    <option value="certificates">Certificates</option>
-                    <option value="resume">Resume</option>
-                    <option value="applications">Applications</option>
-                    <option value="research">Research</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Short Description</label>
-                <input type="text" id="docDesc" placeholder="Brief description" />
-            </div>
-            <div class="form-group">
-                <label>Full Content *</label>
-                <textarea id="docContent" placeholder="The full text that viewers will read..."></textarea>
-            </div>
-            <button class="btn-primary" onclick="saveDoc()">Save</button>
-            <button class="btn-secondary" onclick="closeDocForm()">Cancel</button>
-        </div>
-    </div>
-
-    <!-- Document Viewer -->
-    <div class="viewer" id="viewer">
-        <div class="viewer-box">
-            <div class="viewer-header">
-                <h3 id="viewerTitle">Document</h3>
-                <button class="close-btn" onclick="closeViewer()">×</button>
-            </div>
-            <div class="viewer-body">
-                <pre id="viewerContent"></pre>
-            </div>
-        </div>
-    </div>
-
-    <!-- Main Content -->
-    <div class="container">
-        <!-- Admin Bar -->
-        <div class="admin-bar" id="adminBar">
-            <span>✏️ Edit Mode - Click on text to edit</span>
-            <button onclick="logout()">Logout</button>
-        </div>
-
-        <!-- Edit Button -->
-        <button class="edit-btn" id="editBtn" onclick="showLogin()">✏️</button>
-
-        <!-- Profile Section -->
-        <div class="profile">
-            <h1 class="editable" id="name" contenteditable="false">Christian Philip Sayson</h1>
-            <div class="title editable" id="title" contenteditable="false">Computer Technology Graduate</div>
-            <p class="bio editable" id="bio" contenteditable="false">Passionate about technology and innovation. Explore my achievements, certificates, and research projects below.</p>
-            <div class="contact editable" id="email" contenteditable="false">📧 christian.sayson@gmail.com</div>
-            <div class="contact editable" id="phone" contenteditable="false">📱 +63 912 345 6789</div>
-            <div class="contact editable" id="location" contenteditable="false">📍 Consolacion, Cebu, Philippines</div>
-        </div>
-
-        <!-- Documents Section -->
-        <div class="documents">
-            <div class="section-header">
-                <h2>📁 My Documents</h2>
-                <button class="add-btn" id="addBtn" onclick="showDocForm()">+ Add Document</button>
-            </div>
-            <div class="docs-grid" id="docsGrid"></div>
-        </div>
-    </div>
-
-    <script>
-        const PASSWORD = 'admin123'; // ⚠️ CHANGE THIS!
-        let isEditMode = false;
-        let editingId = null;
-
-        // Sample data
-        const defaultDocs = [
+        if (docsData?.value) {
+          setDocuments(JSON.parse(docsData.value));
+        } else {
+          const sampleDocs = [
             {
-                id: 1,
-                title: "Bachelor's Degree Certificate",
-                category: "achievements",
-                description: "Computer Technology degree with honors",
-                content: "BACHELOR'S DEGREE CERTIFICATE\n\nThis certifies that\nCHRISTIAN PHILIP SAYSON\n\nHas successfully completed the degree of\nBachelor of Science in Computer Technology\n\nAwarded: May 2025\nXYZ University, Philippines\n\nGraduated with HONORS\nGPA: 3.85/4.0"
+              id: 1,
+              title: "Bachelor's Degree Certificate",
+              category: 'achievements',
+              description: 'BS Computer Technology - Graduated with Honors',
+              content: "BACHELOR'S DEGREE CERTIFICATE\n\nThis certifies that\nCHRISTIAN PHILIP SAYSON\n\nHas successfully completed the degree of\nBachelor of Science in Computer Technology\n\nAwarded: May 2025\nUniversity Name\n\nGraduated with HONORS\nGPA: 3.85/4.0",
+              fileType: 'text',
+              date: new Date().toISOString()
             },
             {
-                id: 2,
-                title: "Python Certificate",
-                category: "certificates",
-                description: "Advanced Python programming",
-                content: "PYTHON PROGRAMMING CERTIFICATE\n\nCompleted by: Christian Philip Sayson\nCourse: Advanced Python & Data Analysis\nPlatform: Coursera\nScore: 98/100\nDate: December 2024"
-            },
-            {
-                id: 3,
-                title: "Professional Resume",
-                category: "resume",
-                description: "Updated 2026 resume",
-                content: "CHRISTIAN PHILIP SAYSON\nComputer Technology Graduate\n\nCONTACT:\nEmail: christian.sayson@gmail.com\nPhone: +63 912 345 6789\nLocation: Cebu, Philippines\n\nEDUCATION:\nBS Computer Technology\nXYZ University (2025)\nGPA: 3.85/4.0\n\nSKILLS:\n- Python, Java, JavaScript\n- Web Development\n- Database Management\n- Problem Solving"
+              id: 2,
+              title: "Professional Resume",
+              category: 'resume',
+              description: 'Current professional resume - Updated 2026',
+              content: "CHRISTIAN PHILIP SAYSON\nComputer Technology Graduate\n\nCONTACT:\nEmail: christian.sayson@gmail.com\nPhone: +63 912 345 6789\nLocation: Consolacion, Cebu, Philippines\n\nEDUCATION:\nBachelor of Science in Computer Technology\nUniversity Name (2025)\nGPA: 3.85/4.0\n\nSKILLS:\n- Programming: Python, Java, JavaScript\n- Web Development: HTML, CSS, React\n- Database Management: SQL, MongoDB\n- Problem Solving & Critical Thinking",
+              fileType: 'text',
+              date: new Date().toISOString()
             }
-        ];
-
-        // Initialize
-        window.onload = function() {
-            if (!localStorage.getItem('portfolio_docs')) {
-                localStorage.setItem('portfolio_docs', JSON.stringify(defaultDocs));
-            }
-            loadProfile();
-            loadDocs();
-        };
-
-        // Save profile when editing
-        function saveProfile() {
-            if (!isEditMode) return;
-            const data = {
-                name: document.getElementById('name').textContent,
-                title: document.getElementById('title').textContent,
-                bio: document.getElementById('bio').textContent,
-                email: document.getElementById('email').textContent,
-                phone: document.getElementById('phone').textContent,
-                location: document.getElementById('location').textContent
-            };
-            localStorage.setItem('portfolio_profile', JSON.stringify(data));
+          ];
+          setDocuments(sampleDocs);
+          await window.storage.set('portfolio_documents', JSON.stringify(sampleDocs));
         }
+      } catch (error) {
+        console.log('Loading from memory (first visit)');
+      }
+    };
+    loadData();
+  }, []);
 
-        // Load profile
-        function loadProfile() {
-            const saved = localStorage.getItem('portfolio_profile');
-            if (saved) {
-                const data = JSON.parse(saved);
-                document.getElementById('name').textContent = data.name;
-                document.getElementById('title').textContent = data.title;
-                document.getElementById('bio').textContent = data.bio;
-                document.getElementById('email').textContent = data.email;
-                document.getElementById('phone').textContent = data.phone;
-                document.getElementById('location').textContent = data.location;
-            }
-        }
+  // Save profile
+  const saveProfile = async (newProfile) => {
+    setProfile(newProfile);
+    try {
+      await window.storage.set('portfolio_profile', JSON.stringify(newProfile));
+    } catch (error) {
+      console.error('Error saving profile:', error);
+    }
+  };
 
-        // Login
-        function showLogin() {
-            document.getElementById('loginModal').classList.add('show');
-            document.getElementById('password').value = '';
-            document.getElementById('password').focus();
-        }
+  // Save documents
+  const saveDocuments = async (docs) => {
+    setDocuments(docs);
+    try {
+      await window.storage.set('portfolio_documents', JSON.stringify(docs));
+    } catch (error) {
+      console.error('Error saving documents:', error);
+    }
+  };
 
-        function closeLogin() {
-            document.getElementById('loginModal').classList.remove('show');
-        }
+  // Handle login
+  const handleLogin = () => {
+    if (password === PASSWORD) {
+      setIsEditMode(true);
+      setShowLogin(false);
+      setPassword('');
+    } else {
+      alert('Incorrect password!');
+    }
+  };
 
-        function login() {
-            const pwd = document.getElementById('password').value;
-            if (pwd === PASSWORD) {
-                isEditMode = true;
-                closeLogin();
-                enableEditMode();
-            } else {
-                alert('Wrong password!');
-            }
-        }
+  // Handle file upload
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
 
-        function logout() {
-            isEditMode = false;
-            saveProfile();
-            disableEditMode();
-        }
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      setFormData(prev => ({
+        ...prev,
+        content: event.target.result,
+        fileType: file.type.includes('pdf') ? 'pdf' : 'text',
+        fileName: file.name
+      }));
+    };
 
-        function enableEditMode() {
-            document.getElementById('adminBar').classList.add('show');
-            document.getElementById('editBtn').classList.add('hide');
-            document.getElementById('addBtn').classList.add('show');
+    if (file.type === 'application/pdf') {
+      reader.readAsDataURL(file);
+    } else {
+      reader.readAsText(file);
+    }
+  };
+
+  // Submit document
+  const handleDocSubmit = async () => {
+    if (!formData.title || !formData.content) {
+      alert('Please fill in title and content');
+      return;
+    }
+
+    const doc = {
+      id: editingDoc?.id || Date.now(),
+      title: formData.title,
+      category: formData.category,
+      description: formData.description,
+      content: formData.content,
+      fileType: formData.fileType || 'text',
+      fileName: formData.fileName,
+      date: new Date().toISOString()
+    };
+
+    const updatedDocs = editingDoc
+      ? documents.map(d => d.id === editingDoc.id ? doc : d)
+      : [...documents, doc];
+    
+    await saveDocuments(updatedDocs);
+    setShowUploadModal(false);
+    setEditingDoc(null);
+    setFormData({ title: '', category: 'achievements', description: '', content: '' });
+  };
+
+  // Delete document
+  const handleDelete = async (id) => {
+    if (window.confirm('Are you sure you want to delete this document?')) {
+      const updatedDocs = documents.filter(d => d.id !== id);
+      await saveDocuments(updatedDocs);
+    }
+  };
+
+  // Open edit modal
+  const openEditModal = (doc = null) => {
+    if (doc) {
+      setEditingDoc(doc);
+      setFormData({
+        title: doc.title,
+        category: doc.category,
+        description: doc.description,
+        content: doc.content,
+        fileType: doc.fileType,
+        fileName: doc.fileName
+      });
+    } else {
+      setEditingDoc(null);
+      setFormData({ title: '', category: 'achievements', description: '', content: '' });
+    }
+    setShowUploadModal(true);
+  };
+
+  // Filter documents
+  const filteredDocs = documents.filter(doc => {
+    const matchesSearch = doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         doc.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === 'all' || doc.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
+
+  const categories = [
+    { id: 'all', name: 'All Documents', icon: FileText },
+    { id: 'achievements', name: 'Achievements', icon: Award },
+    { id: 'certificates', name: 'Certificates', icon: GraduationCap },
+    { id: 'resume', name: 'Resume', icon: Briefcase },
+    { id: 'research', name: 'Research', icon: Search },
+  ];
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+      {/* Header */}
+      <header className="bg-white shadow-sm sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            Portfolio
+          </h1>
+          {!isEditMode ? (
+            <button
+              onClick={() => setShowLogin(true)}
+              className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:shadow-lg transition-all"
+            >
+              <Edit2 className="w-4 h-4 inline mr-2" />
+              Edit Mode
+            </button>
+          ) : (
+            <button
+              onClick={() => setIsEditMode(false)}
+              className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-all"
+            >
+              Exit Edit Mode
+            </button>
+          )}
+        </div>
+      </header>
+
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* Profile Section */}
+        <div className="bg-white rounded-2xl shadow-xl p-8 mb-8 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full -mr-32 -mt-32 opacity-50"></div>
+          
+          <div className="relative flex flex-col md:flex-row gap-6 items-start">
+            <div className="text-6xl">{profile.image}</div>
             
-            document.querySelectorAll('.editable').forEach(el => {
-                el.contentEditable = 'true';
-                el.classList.add('edit-mode');
-                el.addEventListener('blur', saveProfile);
-            });
-            
-            loadDocs();
-        }
-
-        function disableEditMode() {
-            document.getElementById('adminBar').classList.remove('show');
-            document.getElementById('editBtn').classList.remove('hide');
-            document.getElementById('addBtn').classList.remove('show');
-            
-            document.querySelectorAll('.editable').forEach(el => {
-                el.contentEditable = 'false';
-                el.classList.remove('edit-mode');
-            });
-            
-            loadDocs();
-        }
-
-        // Documents
-        function loadDocs() {
-            const docs = JSON.parse(localStorage.getItem('portfolio_docs') || '[]');
-            const grid = document.getElementById('docsGrid');
-            
-            if (docs.length === 0) {
-                grid.innerHTML = '<div class="empty-state">No documents yet</div>';
-                return;
-            }
-            
-            grid.innerHTML = docs.map(doc => `
-                <div class="doc-card" onclick="${isEditMode ? '' : `viewDoc(${doc.id})`}">
-                    <h3>${doc.title}</h3>
-                    <div class="category">${doc.category}</div>
-                    <div class="desc">${doc.description || ''}</div>
-                    ${isEditMode ? `
-                        <div class="actions show">
-                            <button class="btn-edit" onclick="event.stopPropagation(); editDoc(${doc.id})">Edit</button>
-                            <button class="btn-delete" onclick="event.stopPropagation(); deleteDoc(${doc.id})">Delete</button>
-                        </div>
-                    ` : `
-                        <button class="btn-view" onclick="viewDoc(${doc.id})">Open & Read</button>
-                    `}
+            <div className="flex-1">
+              {isEditMode ? (
+                <>
+                  <input
+                    className="text-3xl font-bold mb-2 w-full border-b-2 border-blue-300 focus:border-blue-500 outline-none bg-transparent"
+                    value={profile.name}
+                    onChange={(e) => saveProfile({...profile, name: e.target.value})}
+                  />
+                  <input
+                    className="text-xl text-gray-600 mb-4 w-full border-b border-gray-300 focus:border-blue-500 outline-none bg-transparent"
+                    value={profile.title}
+                    onChange={(e) => saveProfile({...profile, title: e.target.value})}
+                  />
+                  <textarea
+                    className="text-gray-700 leading-relaxed mb-4 w-full border rounded-lg p-2 focus:border-blue-500 outline-none"
+                    rows={3}
+                    value={profile.bio}
+                    onChange={(e) => saveProfile({...profile, bio: e.target.value})}
+                  />
+                </>
+              ) : (
+                <>
+                  <h2 className="text-3xl font-bold mb-2 text-gray-800">{profile.name}</h2>
+                  <p className="text-xl text-gray-600 mb-4">{profile.title}</p>
+                  <p className="text-gray-700 leading-relaxed mb-4">{profile.bio}</p>
+                </>
+              )}
+              
+              <div className="grid md:grid-cols-3 gap-3">
+                <div className="flex items-center gap-2 text-gray-600">
+                  <Mail className="w-4 h-4 text-blue-500" />
+                  {isEditMode ? (
+                    <input
+                      className="text-sm flex-1 border-b border-gray-300 focus:border-blue-500 outline-none bg-transparent"
+                      value={profile.email}
+                      onChange={(e) => saveProfile({...profile, email: e.target.value})}
+                    />
+                  ) : (
+                    <span className="text-sm">{profile.email}</span>
+                  )}
                 </div>
-            `).join('');
-        }
+                <div className="flex items-center gap-2 text-gray-600">
+                  <Phone className="w-4 h-4 text-blue-500" />
+                  {isEditMode ? (
+                    <input
+                      className="text-sm flex-1 border-b border-gray-300 focus:border-blue-500 outline-none bg-transparent"
+                      value={profile.phone}
+                      onChange={(e) => saveProfile({...profile, phone: e.target.value})}
+                    />
+                  ) : (
+                    <span className="text-sm">{profile.phone}</span>
+                  )}
+                </div>
+                <div className="flex items-center gap-2 text-gray-600">
+                  <MapPin className="w-4 h-4 text-blue-500" />
+                  {isEditMode ? (
+                    <input
+                      className="text-sm flex-1 border-b border-gray-300 focus:border-blue-500 outline-none bg-transparent"
+                      value={profile.location}
+                      onChange={(e) => saveProfile({...profile, location: e.target.value})}
+                    />
+                  ) : (
+                    <span className="text-sm">{profile.location}</span>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-        function showDocForm(id = null) {
-            editingId = id;
-            const modal = document.getElementById('docFormModal');
-            
-            if (id) {
-                const docs = JSON.parse(localStorage.getItem('portfolio_docs') || '[]');
-                const doc = docs.find(d => d.id === id);
-                document.getElementById('formTitle').textContent = 'Edit Document';
-                document.getElementById('docTitle').value = doc.title;
-                document.getElementById('docCategory').value = doc.category;
-                document.getElementById('docDesc').value = doc.description;
-                document.getElementById('docContent').value = doc.content;
-            } else {
-                document.getElementById('formTitle').textContent = 'Add Document';
-                document.getElementById('docTitle').value = '';
-                document.getElementById('docCategory').value = 'achievements';
-                document.getElementById('docDesc').value = '';
-                document.getElementById('docContent').value = '';
-            }
-            
-            modal.classList.add('show');
-        }
+        {/* Search and Filter */}
+        <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
+          <div className="flex flex-col md:flex-row gap-4 items-center">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <input
+                type="text"
+                placeholder="Search documents..."
+                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+            {isEditMode && (
+              <button
+                onClick={() => openEditModal()}
+                className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:shadow-lg transition-all flex items-center gap-2 whitespace-nowrap"
+              >
+                <Plus className="w-5 h-5" />
+                Add Document
+              </button>
+            )}
+          </div>
 
-        function closeDocForm() {
-            document.getElementById('docFormModal').classList.remove('show');
-            editingId = null;
-        }
+          <div className="flex gap-2 mt-4 overflow-x-auto pb-2">
+            {categories.map(cat => {
+              const Icon = cat.icon;
+              return (
+                <button
+                  key={cat.id}
+                  onClick={() => setSelectedCategory(cat.id)}
+                  className={`px-4 py-2 rounded-lg flex items-center gap-2 whitespace-nowrap transition-all ${
+                    selectedCategory === cat.id
+                      ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  <Icon className="w-4 h-4" />
+                  {cat.name}
+                </button>
+              );
+            })}
+          </div>
+        </div>
 
-        function saveDoc() {
-            const title = document.getElementById('docTitle').value.trim();
-            const content = document.getElementById('docContent').value.trim();
-            
-            if (!title || !content) {
-                alert('Please fill in title and content');
-                return;
-            }
-            
-            const doc = {
-                id: editingId || Date.now(),
-                title: title,
-                category: document.getElementById('docCategory').value,
-                description: document.getElementById('docDesc').value.trim(),
-                content: content
-            };
-            
-            let docs = JSON.parse(localStorage.getItem('portfolio_docs') || '[]');
-            
-            if (editingId) {
-                docs = docs.map(d => d.id === editingId ? doc : d);
-            } else {
-                docs.push(doc);
-            }
-            
-            localStorage.setItem('portfolio_docs', JSON.stringify(docs));
-            closeDocForm();
-            loadDocs();
-        }
+        {/* Documents Grid */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredDocs.map(doc => (
+            <div
+              key={doc.id}
+              className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group"
+            >
+              <div className={`h-2 bg-gradient-to-r ${
+                doc.category === 'achievements' ? 'from-yellow-400 to-orange-400' :
+                doc.category === 'certificates' ? 'from-green-400 to-teal-400' :
+                doc.category === 'resume' ? 'from-blue-400 to-indigo-400' :
+                'from-purple-400 to-pink-400'
+              }`}></div>
+              
+              <div className="p-6">
+                <div className="flex items-start justify-between mb-3">
+                  <h3 className="text-lg font-bold text-gray-800 flex-1">{doc.title}</h3>
+                  {doc.fileType === 'pdf' && (
+                    <FileText className="w-5 h-5 text-red-500" />
+                  )}
+                </div>
+                
+                <p className="text-sm text-gray-600 mb-4 line-clamp-2">{doc.description}</p>
+                
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => {
+                      setCurrentDoc(doc);
+                      setShowViewerModal(true);
+                    }}
+                    className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all flex items-center justify-center gap-2"
+                  >
+                    <Eye className="w-4 h-4" />
+                    View
+                  </button>
+                  
+                  {isEditMode && (
+                    <>
+                      <button
+                        onClick={() => openEditModal(doc)}
+                        className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-all"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(doc.id)}
+                        className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
 
-        function editDoc(id) {
-            showDocForm(id);
-        }
+        {filteredDocs.length === 0 && (
+          <div className="text-center py-16 bg-white rounded-2xl shadow-lg">
+            <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+            <p className="text-gray-500 text-lg">No documents found</p>
+          </div>
+        )}
+      </div>
 
-        function deleteDoc(id) {
-            if (confirm('Delete this document?')) {
-                let docs = JSON.parse(localStorage.getItem('portfolio_docs') || '[]');
-                docs = docs.filter(d => d.id !== id);
-                localStorage.setItem('portfolio_docs', JSON.stringify(docs));
-                loadDocs();
-            }
-        }
+      {/* Login Modal */}
+      {showLogin && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl">
+            <h2 className="text-2xl font-bold mb-6 text-gray-800">🔒 Admin Login</h2>
+            <input
+              type="password"
+              placeholder="Enter password"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg mb-4 focus:ring-2 focus:ring-blue-500 outline-none"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
+            />
+            <div className="flex gap-3">
+              <button
+                onClick={handleLogin}
+                className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:shadow-lg transition-all"
+              >
+                Login
+              </button>
+              <button
+                onClick={() => setShowLogin(false)}
+                className="px-4 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all"
+              >
+                Cancel
+              </button>
+            </div>
+            <p className="text-xs text-gray-500 mt-4 text-center">Default password: admin123</p>
+          </div>
+        </div>
+      )}
 
-        function viewDoc(id) {
-            const docs = JSON.parse(localStorage.getItem('portfolio_docs') || '[]');
-            const doc = docs.find(d => d.id === id);
+      {/* Upload/Edit Modal */}
+      {showUploadModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+          <div className="bg-white rounded-2xl p-8 max-w-2xl w-full shadow-2xl my-8">
+            <h2 className="text-2xl font-bold mb-6 text-gray-800">
+              {editingDoc ? 'Edit Document' : 'Add New Document'}
+            </h2>
             
-            if (doc) {
-                document.getElementById('viewerTitle').textContent = doc.title;
-                document.getElementById('viewerContent').textContent = doc.content;
-                document.getElementById('viewer').classList.add('show');
-            }
-        }
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-semibold mb-2 text-gray-700">Title *</label>
+                <input
+                  value={formData.title}
+                  onChange={(e) => setFormData({...formData, title: e.target.value})}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  placeholder="Enter document title"
+                />
+              </div>
 
-        function closeViewer() {
-            document.getElementById('viewer').classList.remove('show');
-        }
+              <div>
+                <label className="block text-sm font-semibold mb-2 text-gray-700">Category *</label>
+                <select
+                  value={formData.category}
+                  onChange={(e) => setFormData({...formData, category: e.target.value})}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                >
+                  <option value="achievements">Achievements</option>
+                  <option value="certificates">Certificates</option>
+                  <option value="resume">Resume</option>
+                  <option value="research">Research</option>
+                </select>
+              </div>
 
-        // Enter key to login
-        document.getElementById('password').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') login();
-        });
-    </script>
-</body>
-</html>
+              <div>
+                <label className="block text-sm font-semibold mb-2 text-gray-700">Description</label>
+                <input
+                  value={formData.description}
+                  onChange={(e) => setFormData({...formData, description: e.target.value})}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  placeholder="Brief description"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold mb-2 text-gray-700">Upload File (PDF or Text)</label>
+                <input
+                  type="file"
+                  accept=".pdf,.txt,.doc,.docx"
+                  onChange={handleFileUpload}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg"
+                />
+                <p className="text-xs text-gray-500 mt-1">Or write content below</p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold mb-2 text-gray-700">Content *</label>
+                <textarea
+                  value={formData.content}
+                  onChange={(e) => setFormData({...formData, content: e.target.value})}
+                  rows={10}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm"
+                  placeholder="Enter document content..."
+                />
+              </div>
+
+              <div className="flex gap-3 pt-4">
+                <button
+                  onClick={handleDocSubmit}
+                  className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:shadow-lg transition-all flex items-center justify-center gap-2"
+                >
+                  <Save className="w-4 h-4" />
+                  Save Document
+                </button>
+                <button
+                  onClick={() => {
+                    setShowUploadModal(false);
+                    setEditingDoc(null);
+                    setFormData({ title: '', category: 'achievements', description: '', content: '' });
+                  }}
+                  className="px-4 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Document Viewer Modal */}
+      {showViewerModal && currentDoc && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl">
+            <div className="bg-gradient-to-r from-blue-500 to-purple-500 text-white p-6 rounded-t-2xl flex justify-between items-center">
+              <h3 className="text-xl font-bold">{currentDoc.title}</h3>
+              <button
+                onClick={() => setShowViewerModal(false)}
+                className="p-2 hover:bg-white hover:bg-opacity-20 rounded-lg transition-all"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            
+            <div className="p-8 overflow-y-auto flex-1">
+              {currentDoc.fileType === 'pdf' ? (
+                <iframe
+                  src={currentDoc.content}
+                  className="w-full h-full min-h-[600px] rounded-lg border-2 border-gray-200"
+                  title={currentDoc.title}
+                />
+              ) : (
+                <pre className="whitespace-pre-wrap font-sans text-gray-700 leading-relaxed">
+                  {currentDoc.content}
+                </pre>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default PortfolioWebsite;

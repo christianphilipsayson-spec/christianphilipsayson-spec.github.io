@@ -1,552 +1,424 @@
-import React, { useState, useEffect } from 'react';
-import { Upload, FileText, Award, GraduationCap, Briefcase, Search, Edit2, Trash2, X, Save, User, Mail, Phone, MapPin, Plus, Eye, Download } from 'lucide-react';
-
-const PortfolioWebsite = () => {
-  const [isEditMode, setIsEditMode] = useState(false);
-  const [showLogin, setShowLogin] = useState(false);
-  const [password, setPassword] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [showUploadModal, setShowUploadModal] = useState(false);
-  const [showViewerModal, setShowViewerModal] = useState(false);
-  const [currentDoc, setCurrentDoc] = useState(null);
-  const [editingDoc, setEditingDoc] = useState(null);
-
-  const PASSWORD = 'admin123';
-
-  const [profile, setProfile] = useState({
-    name: 'Christian Philip Sayson',
-    title: 'Computer Technology Graduate',
-    bio: 'Passionate about technology and innovation. Dedicated to creating impactful solutions and continuously learning new technologies.',
-    email: 'christian.sayson@gmail.com',
-    phone: '+63 912 345 6789',
-    location: 'Consolacion, Cebu, Philippines',
-    image: '👤'
-  });
-
-  const [documents, setDocuments] = useState([]);
-
-  // Load data from storage
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const profileData = await window.storage.get('portfolio_profile');
-        const docsData = await window.storage.get('portfolio_documents');
-        
-        if (profileData?.value) {
-          setProfile(JSON.parse(profileData.value));
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Christian Philip Sayson - Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        if (docsData?.value) {
-          setDocuments(JSON.parse(docsData.value));
-        } else {
-          // Initialize with sample data
-          const sampleDocs = [
-            {
-              id: 1,
-              title: "Bachelor's Degree Certificate",
-              category: 'achievements',
-              description: 'BS Computer Technology - Graduated with Honors',
-              content: 'Sample certificate content...',
-              fileType: 'text',
-              date: new Date().toISOString()
+        .animate-fade-in { animation: fadeIn 0.3s ease-out; }
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .gradient-text {
+            background: linear-gradient(to right, #3b82f6, #9333ea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+    <div id="app"></div>
+
+    <script>
+        // State
+        let state = {
+            isEditMode: false,
+            showLogin: false,
+            password: '',
+            searchTerm: '',
+            selectedCategory: 'all',
+            showUploadModal: false,
+            showViewerModal: false,
+            currentDoc: null,
+            editingDoc: null,
+            formData: { title: '', category: 'achievements', description: '', content: '' },
+            profile: {
+                name: 'Christian Philip Sayson',
+                title: 'Computer Technology Graduate',
+                bio: 'Passionate about technology and innovation. Dedicated to creating impactful solutions and continuously learning new technologies.',
+                email: 'christian.sayson@gmail.com',
+                phone: '+63 912 345 6789',
+                location: 'Consolacion, Cebu, Philippines',
+            },
+            documents: []
+        };
+
+        const PASSWORD = 'admin123';
+
+        // Storage functions
+        async function loadData() {
+            try {
+                const profileData = await window.storage.get('portfolio_profile');
+                const docsData = await window.storage.get('portfolio_documents');
+                
+                if (profileData?.value) {
+                    state.profile = JSON.parse(profileData.value);
+                }
+                if (docsData?.value) {
+                    state.documents = JSON.parse(docsData.value);
+                } else {
+                    state.documents = [
+                        {
+                            id: 1,
+                            title: "Bachelor's Degree Certificate",
+                            category: 'achievements',
+                            description: 'BS Computer Technology - Graduated with Honors',
+                            content: "BACHELOR'S DEGREE CERTIFICATE\n\nThis certifies that\nCHRISTIAN PHILIP SAYSON\n\nHas successfully completed the degree of\nBachelor of Science in Computer Technology\n\nAwarded: May 2025\nUniversity Name\n\nGraduated with HONORS\nGPA: 3.85/4.0",
+                            fileType: 'text',
+                            date: new Date().toISOString()
+                        },
+                        {
+                            id: 2,
+                            title: "Professional Resume",
+                            category: 'resume',
+                            description: 'Current professional resume - Updated 2026',
+                            content: "CHRISTIAN PHILIP SAYSON\nComputer Technology Graduate\n\nCONTACT:\nEmail: christian.sayson@gmail.com\nPhone: +63 912 345 6789\nLocation: Consolacion, Cebu, Philippines\n\nEDUCATION:\nBachelor of Science in Computer Technology\nUniversity Name (2025)\nGPA: 3.85/4.0\n\nSKILLS:\n- Programming: Python, Java, JavaScript\n- Web Development: HTML, CSS, React\n- Database Management: SQL, MongoDB\n- Problem Solving & Critical Thinking",
+                            fileType: 'text',
+                            date: new Date().toISOString()
+                        }
+                    ];
+                    await window.storage.set('portfolio_documents', JSON.stringify(state.documents));
+                }
+            } catch (error) {
+                console.log('First visit - using default data');
             }
-          ];
-          setDocuments(sampleDocs);
-          await window.storage.set('portfolio_documents', JSON.stringify(sampleDocs));
+            render();
         }
-      } catch (error) {
-        console.log('Loading from memory (first visit)');
-      }
-    };
-    loadData();
-  }, []);
 
-  // Save profile
-  const saveProfile = async (newProfile) => {
-    setProfile(newProfile);
-    try {
-      await window.storage.set('portfolio_profile', JSON.stringify(newProfile));
-    } catch (error) {
-      console.error('Error saving profile:', error);
-    }
-  };
+        async function saveProfile(newProfile) {
+            state.profile = newProfile;
+            try {
+                await window.storage.set('portfolio_profile', JSON.stringify(newProfile));
+            } catch (error) {
+                console.error('Error saving:', error);
+            }
+        }
 
-  // Save documents
-  const saveDocuments = async (docs) => {
-    setDocuments(docs);
-    try {
-      await window.storage.set('portfolio_documents', JSON.stringify(docs));
-    } catch (error) {
-      console.error('Error saving documents:', error);
-    }
-  };
+        async function saveDocuments(docs) {
+            state.documents = docs;
+            try {
+                await window.storage.set('portfolio_documents', JSON.stringify(docs));
+            } catch (error) {
+                console.error('Error saving:', error);
+            }
+            render();
+        }
 
-  // Handle login
-  const handleLogin = () => {
-    if (password === PASSWORD) {
-      setIsEditMode(true);
-      setShowLogin(false);
-      setPassword('');
-    } else {
-      alert('Incorrect password!');
-    }
-  };
+        // Global functions
+        window.showLogin = () => { state.showLogin = true; render(); };
+        window.closeLogin = () => { state.showLogin = false; state.password = ''; render(); };
+        window.exitEditMode = () => { state.isEditMode = false; render(); };
+        window.updatePassword = (val) => { state.password = val; };
+        window.updateSearch = (val) => { state.searchTerm = val; render(); };
+        window.selectCategory = (cat) => { state.selectedCategory = cat; render(); };
+        
+        window.login = () => {
+            if (state.password === PASSWORD) {
+                state.isEditMode = true;
+                state.showLogin = false;
+                state.password = '';
+            } else {
+                alert('Incorrect password!');
+            }
+            render();
+        };
 
-  // Handle file upload
-  const handleFileUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+        window.updateProfile = async (field, value) => {
+            state.profile[field] = value;
+            await saveProfile(state.profile);
+        };
 
-    const reader = new FileReader();
-    reader.onload = async (event) => {
-      const newDoc = {
-        id: Date.now(),
-        title: editingDoc?.title || file.name,
-        category: editingDoc?.category || 'achievements',
-        description: editingDoc?.description || '',
-        fileName: file.name,
-        fileType: file.type.includes('pdf') ? 'pdf' : 'text',
-        content: event.target.result,
-        date: new Date().toISOString()
-      };
+        window.updateFormData = (field, value) => {
+            state.formData[field] = value;
+        };
 
-      const updatedDocs = editingDoc 
-        ? documents.map(d => d.id === editingDoc.id ? newDoc : d)
-        : [...documents, newDoc];
-      
-      await saveDocuments(updatedDocs);
-      setShowUploadModal(false);
-      setEditingDoc(null);
-    };
+        window.handleFileChange = (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
 
-    if (file.type === 'application/pdf') {
-      reader.readAsDataURL(file);
-    } else {
-      reader.readAsText(file);
-    }
-  };
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                state.formData.content = event.target.result;
+                state.formData.fileType = file.type.includes('pdf') ? 'pdf' : 'text';
+                if (!state.formData.title) state.formData.title = file.name;
+            };
 
-  // Add/Edit document
-  const handleDocSubmit = async (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    
-    const doc = {
-      id: editingDoc?.id || Date.now(),
-      title: formData.get('title'),
-      category: formData.get('category'),
-      description: formData.get('description'),
-      content: formData.get('content'),
-      fileType: 'text',
-      date: new Date().toISOString()
-    };
+            if (file.type === 'application/pdf') {
+                reader.readAsDataURL(file);
+            } else {
+                reader.readAsText(file);
+            }
+        };
 
-    const updatedDocs = editingDoc
-      ? documents.map(d => d.id === editingDoc.id ? doc : d)
-      : [...documents, doc];
-    
-    await saveDocuments(updatedDocs);
-    setShowUploadModal(false);
-    setEditingDoc(null);
-  };
+        window.openAddModal = () => {
+            state.editingDoc = null;
+            state.formData = { title: '', category: 'achievements', description: '', content: '' };
+            state.showUploadModal = true;
+            render();
+        };
 
-  // Delete document
-  const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this document?')) {
-      const updatedDocs = documents.filter(d => d.id !== id);
-      await saveDocuments(updatedDocs);
-    }
-  };
+        window.closeUploadModal = () => {
+            state.showUploadModal = false;
+            state.editingDoc = null;
+            render();
+        };
 
-  // Filter documents
-  const filteredDocs = documents.filter(doc => {
-    const matchesSearch = doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         doc.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'all' || doc.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+        window.saveDocument = async () => {
+            if (!state.formData.title || !state.formData.content) {
+                alert('Please fill in title and content');
+                return;
+            }
 
-  const categories = [
-    { id: 'all', name: 'All Documents', icon: FileText },
-    { id: 'achievements', name: 'Achievements', icon: Award },
-    { id: 'certificates', name: 'Certificates', icon: GraduationCap },
-    { id: 'resume', name: 'Resume', icon: Briefcase },
-    { id: 'research', name: 'Research', icon: Search },
-  ];
+            const doc = {
+                id: state.editingDoc?.id || Date.now(),
+                ...state.formData,
+                date: new Date().toISOString()
+            };
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            Portfolio
-          </h1>
-          {!isEditMode ? (
-            <button
-              onClick={() => setShowLogin(true)}
-              className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:shadow-lg transition-all"
-            >
-              <Edit2 className="w-4 h-4 inline mr-2" />
-              Edit Mode
-            </button>
-          ) : (
-            <button
-              onClick={() => setIsEditMode(false)}
-              className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-all"
-            >
-              Exit Edit Mode
-            </button>
-          )}
-        </div>
-      </header>
-
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Profile Section */}
-        <div className="bg-white rounded-2xl shadow-xl p-8 mb-8 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full -mr-32 -mt-32 opacity-50"></div>
-          
-          <div className="relative flex flex-col md:flex-row gap-6 items-start">
-            <div className="text-6xl">{profile.image}</div>
+            const updatedDocs = state.editingDoc
+                ? state.documents.map(d => d.id === state.editingDoc.id ? doc : d)
+                : [...state.documents, doc];
             
-            <div className="flex-1">
-              {isEditMode ? (
-                <>
-                  <input
-                    className="text-3xl font-bold mb-2 w-full border-b-2 border-blue-300 focus:border-blue-500 outline-none"
-                    value={profile.name}
-                    onChange={(e) => saveProfile({...profile, name: e.target.value})}
-                  />
-                  <input
-                    className="text-xl text-gray-600 mb-4 w-full border-b border-gray-300 focus:border-blue-500 outline-none"
-                    value={profile.title}
-                    onChange={(e) => saveProfile({...profile, title: e.target.value})}
-                  />
-                  <textarea
-                    className="text-gray-700 leading-relaxed mb-4 w-full border rounded-lg p-2 focus:border-blue-500 outline-none"
-                    rows="3"
-                    value={profile.bio}
-                    onChange={(e) => saveProfile({...profile, bio: e.target.value})}
-                  />
-                </>
-              ) : (
-                <>
-                  <h2 className="text-3xl font-bold mb-2 text-gray-800">{profile.name}</h2>
-                  <p className="text-xl text-gray-600 mb-4">{profile.title}</p>
-                  <p className="text-gray-700 leading-relaxed mb-4">{profile.bio}</p>
-                </>
-              )}
-              
-              <div className="grid md:grid-cols-3 gap-3">
-                <div className="flex items-center gap-2 text-gray-600">
-                  <Mail className="w-4 h-4 text-blue-500" />
-                  {isEditMode ? (
-                    <input
-                      className="text-sm flex-1 border-b border-gray-300 focus:border-blue-500 outline-none"
-                      value={profile.email}
-                      onChange={(e) => saveProfile({...profile, email: e.target.value})}
-                    />
-                  ) : (
-                    <span className="text-sm">{profile.email}</span>
-                  )}
-                </div>
-                <div className="flex items-center gap-2 text-gray-600">
-                  <Phone className="w-4 h-4 text-blue-500" />
-                  {isEditMode ? (
-                    <input
-                      className="text-sm flex-1 border-b border-gray-300 focus:border-blue-500 outline-none"
-                      value={profile.phone}
-                      onChange={(e) => saveProfile({...profile, phone: e.target.value})}
-                    />
-                  ) : (
-                    <span className="text-sm">{profile.phone}</span>
-                  )}
-                </div>
-                <div className="flex items-center gap-2 text-gray-600">
-                  <MapPin className="w-4 h-4 text-blue-500" />
-                  {isEditMode ? (
-                    <input
-                      className="text-sm flex-1 border-b border-gray-300 focus:border-blue-500 outline-none"
-                      value={profile.location}
-                      onChange={(e) => saveProfile({...profile, location: e.target.value})}
-                    />
-                  ) : (
-                    <span className="text-sm">{profile.location}</span>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+            await saveDocuments(updatedDocs);
+            state.showUploadModal = false;
+            state.editingDoc = null;
+            state.formData = { title: '', category: 'achievements', description: '', content: '' };
+            render();
+        };
 
-        {/* Search and Filter */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
-          <div className="flex flex-col md:flex-row gap-4 items-center">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-              <input
-                type="text"
-                placeholder="Search documents..."
-                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-            {isEditMode && (
-              <button
-                onClick={() => {
-                  setEditingDoc(null);
-                  setShowUploadModal(true);
-                }}
-                className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:shadow-lg transition-all flex items-center gap-2 whitespace-nowrap"
-              >
-                <Plus className="w-5 h-5" />
-                Add Document
-              </button>
-            )}
-          </div>
+        window.editDoc = (id) => {
+            const doc = state.documents.find(d => d.id === id);
+            if (doc) {
+                state.editingDoc = doc;
+                state.formData = { ...doc };
+                state.showUploadModal = true;
+                render();
+            }
+        };
 
-          <div className="flex gap-2 mt-4 overflow-x-auto pb-2">
-            {categories.map(cat => {
-              const Icon = cat.icon;
-              return (
-                <button
-                  key={cat.id}
-                  onClick={() => setSelectedCategory(cat.id)}
-                  className={`px-4 py-2 rounded-lg flex items-center gap-2 whitespace-nowrap transition-all ${
-                    selectedCategory === cat.id
-                      ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  <Icon className="w-4 h-4" />
-                  {cat.name}
-                </button>
-              );
-            })}
-          </div>
-        </div>
+        window.deleteDoc = async (id) => {
+            if (confirm('Delete this document?')) {
+                await saveDocuments(state.documents.filter(d => d.id !== id));
+            }
+        };
 
-        {/* Documents Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredDocs.map(doc => (
-            <div
-              key={doc.id}
-              className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group"
-            >
-              <div className={`h-2 bg-gradient-to-r ${
-                doc.category === 'achievements' ? 'from-yellow-400 to-orange-400' :
-                doc.category === 'certificates' ? 'from-green-400 to-teal-400' :
-                doc.category === 'resume' ? 'from-blue-400 to-indigo-400' :
-                'from-purple-400 to-pink-400'
-              }`}></div>
-              
-              <div className="p-6">
-                <div className="flex items-start justify-between mb-3">
-                  <h3 className="text-lg font-bold text-gray-800 flex-1">{doc.title}</h3>
-                  {doc.fileType === 'pdf' && (
-                    <FileText className="w-5 h-5 text-red-500" />
-                  )}
-                </div>
-                
-                <p className="text-sm text-gray-600 mb-4 line-clamp-2">{doc.description}</p>
-                
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => {
-                      setCurrentDoc(doc);
-                      setShowViewerModal(true);
-                    }}
-                    className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all flex items-center justify-center gap-2"
-                  >
-                    <Eye className="w-4 h-4" />
-                    View
-                  </button>
-                  
-                  {isEditMode && (
-                    <>
-                      <button
-                        onClick={() => {
-                          setEditingDoc(doc);
-                          setShowUploadModal(true);
-                        }}
-                        className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-all"
-                      >
-                        <Edit2 className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(doc.id)}
-                        className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </>
-                  )}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+        window.viewDoc = (id) => {
+            state.currentDoc = state.documents.find(d => d.id === id);
+            state.showViewerModal = true;
+            render();
+        };
 
-        {filteredDocs.length === 0 && (
-          <div className="text-center py-16 bg-white rounded-2xl shadow-lg">
-            <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <p className="text-gray-500 text-lg">No documents found</p>
-          </div>
-        )}
-      </div>
+        window.closeViewer = () => {
+            state.showViewerModal = false;
+            state.currentDoc = null;
+            render();
+        };
 
-      {/* Login Modal */}
-      {showLogin && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl">
-            <h2 className="text-2xl font-bold mb-6 text-gray-800">Admin Login</h2>
-            <input
-              type="password"
-              placeholder="Enter password"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg mb-4 focus:ring-2 focus:ring-blue-500 outline-none"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
-            />
-            <div className="flex gap-3">
-              <button
-                onClick={handleLogin}
-                className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:shadow-lg transition-all"
-              >
-                Login
-              </button>
-              <button
-                onClick={() => setShowLogin(false)}
-                className="px-4 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+        function getFilteredDocs() {
+            return state.documents.filter(doc => {
+                const matchesSearch = doc.title.toLowerCase().includes(state.searchTerm.toLowerCase()) ||
+                                     (doc.description || '').toLowerCase().includes(state.searchTerm.toLowerCase());
+                const matchesCategory = state.selectedCategory === 'all' || doc.category === state.selectedCategory;
+                return matchesSearch && matchesCategory;
+            });
+        }
 
-      {/* Upload/Edit Modal */}
-      {showUploadModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-          <div className="bg-white rounded-2xl p-8 max-w-2xl w-full shadow-2xl my-8">
-            <h2 className="text-2xl font-bold mb-6 text-gray-800">
-              {editingDoc ? 'Edit Document' : 'Add New Document'}
-            </h2>
+        // Render
+        function render() {
+            const filteredDocs = getFilteredDocs();
             
-            <form onSubmit={handleDocSubmit}>
-              <div className="mb-4">
-                <label className="block text-sm font-semibold mb-2 text-gray-700">Title *</label>
-                <input
-                  name="title"
-                  defaultValue={editingDoc?.title}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                  required
-                />
-              </div>
+            document.getElementById('app').innerHTML = `
+                <!-- Header -->
+                <header class="bg-white shadow-sm sticky top-0 z-40">
+                    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+                        <h1 class="text-2xl font-bold gradient-text">Portfolio</h1>
+                        ${!state.isEditMode ? `
+                            <button onclick="showLogin()" class="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:shadow-lg transition-all">
+                                ✏️ Edit Mode
+                            </button>
+                        ` : `
+                            <button onclick="exitEditMode()" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-all">
+                                Exit Edit Mode
+                            </button>
+                        `}
+                    </div>
+                </header>
 
-              <div className="mb-4">
-                <label className="block text-sm font-semibold mb-2 text-gray-700">Category *</label>
-                <select
-                  name="category"
-                  defaultValue={editingDoc?.category || 'achievements'}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                >
-                  <option value="achievements">Achievements</option>
-                  <option value="certificates">Certificates</option>
-                  <option value="resume">Resume</option>
-                  <option value="research">Research</option>
-                </select>
-              </div>
+                <div class="max-w-7xl mx-auto px-4 py-8">
+                    <!-- Profile -->
+                    <div class="bg-white rounded-2xl shadow-xl p-8 mb-8 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full -mr-32 -mt-32 opacity-50"></div>
+                        
+                        <div class="relative flex flex-col md:flex-row gap-6 items-start">
+                            <div class="text-6xl">👤</div>
+                            
+                            <div class="flex-1">
+                                ${state.isEditMode ? `
+                                    <input class="text-3xl font-bold mb-2 w-full border-b-2 border-blue-300 focus:border-blue-500 outline-none bg-transparent" value="${state.profile.name}" onchange="updateProfile('name', this.value)" />
+                                    <input class="text-xl text-gray-600 mb-4 w-full border-b border-gray-300 focus:border-blue-500 outline-none bg-transparent" value="${state.profile.title}" onchange="updateProfile('title', this.value)" />
+                                    <textarea class="text-gray-700 leading-relaxed mb-4 w-full border rounded-lg p-2 focus:border-blue-500 outline-none" rows="3" onchange="updateProfile('bio', this.value)">${state.profile.bio}</textarea>
+                                ` : `
+                                    <h2 class="text-3xl font-bold mb-2 text-gray-800">${state.profile.name}</h2>
+                                    <p class="text-xl text-gray-600 mb-4">${state.profile.title}</p>
+                                    <p class="text-gray-700 leading-relaxed mb-4">${state.profile.bio}</p>
+                                `}
+                                
+                                <div class="grid md:grid-cols-3 gap-3">
+                                    <div class="flex items-center gap-2 text-gray-600">
+                                        <span>📧</span>
+                                        ${state.isEditMode ? `<input class="text-sm flex-1 border-b border-gray-300 focus:border-blue-500 outline-none bg-transparent" value="${state.profile.email}" onchange="updateProfile('email', this.value)" />` : `<span class="text-sm">${state.profile.email}</span>`}
+                                    </div>
+                                    <div class="flex items-center gap-2 text-gray-600">
+                                        <span>📱</span>
+                                        ${state.isEditMode ? `<input class="text-sm flex-1 border-b border-gray-300 focus:border-blue-500 outline-none bg-transparent" value="${state.profile.phone}" onchange="updateProfile('phone', this.value)" />` : `<span class="text-sm">${state.profile.phone}</span>`}
+                                    </div>
+                                    <div class="flex items-center gap-2 text-gray-600">
+                                        <span>📍</span>
+                                        ${state.isEditMode ? `<input class="text-sm flex-1 border-b border-gray-300 focus:border-blue-500 outline-none bg-transparent" value="${state.profile.location}" onchange="updateProfile('location', this.value)" />` : `<span class="text-sm">${state.profile.location}</span>`}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-              <div className="mb-4">
-                <label className="block text-sm font-semibold mb-2 text-gray-700">Description</label>
-                <input
-                  name="description"
-                  defaultValue={editingDoc?.description}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                />
-              </div>
+                    <!-- Search -->
+                    <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+                        <div class="flex flex-col md:flex-row gap-4 items-center">
+                            <input type="text" placeholder="🔍 Search documents..." class="flex-1 px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" value="${state.searchTerm}" oninput="updateSearch(this.value)" />
+                            ${state.isEditMode ? `<button onclick="openAddModal()" class="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:shadow-lg transition-all whitespace-nowrap">+ Add Document</button>` : ''}
+                        </div>
 
-              <div className="mb-4">
-                <label className="block text-sm font-semibold mb-2 text-gray-700">Upload File (PDF or Text)</label>
-                <input
-                  type="file"
-                  accept=".pdf,.txt,.doc,.docx"
-                  onChange={handleFileUpload}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg"
-                />
-                <p className="text-xs text-gray-500 mt-1">Or write content below</p>
-              </div>
+                        <div class="flex gap-2 mt-4 overflow-x-auto pb-2">
+                            ${['all', 'achievements', 'certificates', 'resume', 'research'].map(cat => `
+                                <button onclick="selectCategory('${cat}')" class="px-4 py-2 rounded-lg whitespace-nowrap transition-all ${state.selectedCategory === cat ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}">
+                                    ${cat === 'all' ? '📁' : cat === 'achievements' ? '🏆' : cat === 'certificates' ? '🎓' : cat === 'resume' ? '💼' : '🔬'} ${cat.charAt(0).toUpperCase() + cat.slice(1)}
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
 
-              <div className="mb-6">
-                <label className="block text-sm font-semibold mb-2 text-gray-700">Content *</label>
-                <textarea
-                  name="content"
-                  defaultValue={editingDoc?.content}
-                  rows="10"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm"
-                  required
-                />
-              </div>
+                    <!-- Documents -->
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        ${filteredDocs.map(doc => `
+                            <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden">
+                                <div class="h-2 bg-gradient-to-r ${doc.category === 'achievements' ? 'from-yellow-400 to-orange-400' : doc.category === 'certificates' ? 'from-green-400 to-teal-400' : doc.category === 'resume' ? 'from-blue-400 to-indigo-400' : 'from-purple-400 to-pink-400'}"></div>
+                                
+                                <div class="p-6">
+                                    <h3 class="text-lg font-bold text-gray-800 mb-3">${doc.title}</h3>
+                                    <p class="text-sm text-gray-600 mb-4 line-clamp-2">${doc.description || ''}</p>
+                                    
+                                    <div class="flex gap-2">
+                                        <button onclick="viewDoc(${doc.id})" class="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all">
+                                            👁️ View
+                                        </button>
+                                        ${state.isEditMode ? `
+                                            <button onclick="editDoc(${doc.id})" class="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-all">✏️</button>
+                                            <button onclick="deleteDoc(${doc.id})" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all">🗑️</button>
+                                        ` : ''}
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
 
-              <div className="flex gap-3">
-                <button
-                  type="submit"
-                  className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:shadow-lg transition-all flex items-center justify-center gap-2"
-                >
-                  <Save className="w-4 h-4" />
-                  Save Document
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowUploadModal(false);
-                    setEditingDoc(null);
-                  }}
-                  className="px-4 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all"
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+                    ${filteredDocs.length === 0 ? `<div class="text-center py-16 bg-white rounded-2xl shadow-lg"><p class="text-gray-500 text-lg">📄 No documents found</p></div>` : ''}
+                </div>
 
-      {/* Document Viewer Modal */}
-      {showViewerModal && currentDoc && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl">
-            <div className="bg-gradient-to-r from-blue-500 to-purple-500 text-white p-6 rounded-t-2xl flex justify-between items-center">
-              <h3 className="text-xl font-bold">{currentDoc.title}</h3>
-              <button
-                onClick={() => setShowViewerModal(false)}
-                className="p-2 hover:bg-white hover:bg-opacity-20 rounded-lg transition-all"
-              >
-                <X className="w-6 h-6" />
-              </button>
-            </div>
-            
-            <div className="p-8 overflow-y-auto flex-1">
-              {currentDoc.fileType === 'pdf' ? (
-                <iframe
-                  src={currentDoc.content}
-                  className="w-full h-full min-h-[600px] rounded-lg"
-                  title={currentDoc.title}
-                />
-              ) : (
-                <pre className="whitespace-pre-wrap font-sans text-gray-700 leading-relaxed">
-                  {currentDoc.content}
-                </pre>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
+                <!-- Login Modal -->
+                ${state.showLogin ? `
+                    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                        <div class="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl animate-fade-in">
+                            <h2 class="text-2xl font-bold mb-6 text-gray-800">🔒 Admin Login</h2>
+                            <input type="password" placeholder="Enter password" class="w-full px-4 py-3 border border-gray-300 rounded-lg mb-4 focus:ring-2 focus:ring-blue-500 outline-none" value="${state.password}" oninput="updatePassword(this.value)" onkeypress="if(event.key==='Enter') login()" />
+                            <div class="flex gap-3">
+                                <button onclick="login()" class="flex-1 px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:shadow-lg transition-all">Login</button>
+                                <button onclick="closeLogin()" class="px-4 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all">Cancel</button>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-4 text-center">Password: admin123</p>
+                        </div>
+                    </div>
+                ` : ''}
 
-export default PortfolioWebsite;
+                <!-- Upload Modal -->
+                ${state.showUploadModal ? `
+                    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+                        <div class="bg-white rounded-2xl p-8 max-w-2xl w-full shadow-2xl my-8 animate-fade-in">
+                            <h2 class="text-2xl font-bold mb-6">${state.editingDoc ? 'Edit Document' : 'Add Document'}</h2>
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-semibold mb-2">Title *</label>
+                                    <input value="${state.formData.title}" oninput="updateFormData('title', this.value)" class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" />
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-semibold mb-2">Category *</label>
+                                    <select onchange="updateFormData('category', this.value)" class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                                        <option value="achievements" ${state.formData.category === 'achievements' ? 'selected' : ''}>Achievements</option>
+                                        <option value="certificates" ${state.formData.category === 'certificates' ? 'selected' : ''}>Certificates</option>
+                                        <option value="resume" ${state.formData.category === 'resume' ? 'selected' : ''}>Resume</option>
+                                        <option value="research" ${state.formData.category === 'research' ? 'selected' : ''}>Research</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-semibold mb-2">Description</label>
+                                    <input value="${state.formData.description}" oninput="updateFormData('description', this.value)" class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" />
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-semibold mb-2">Upload File (PDF or Text)</label>
+                                    <input type="file" accept=".pdf,.txt,.doc,.docx" onchange="handleFileChange(event)" class="w-full px-4 py-3 border rounded-lg" />
+                                    <p class="text-xs text-gray-500 mt-1">Or write content below</p>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-semibold mb-2">Content *</label>
+                                    <textarea rows="10" oninput="updateFormData('content', this.value)" class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm">${state.formData.content}</textarea>
+                                </div>
+
+                                <div class="flex gap-3 pt-4">
+                                    <button onclick="saveDocument()" class="flex-1 px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:shadow-lg transition-all">💾 Save</button>
+                                    <button onclick="closeUploadModal()" class="px-4 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                ` : ''}
+
+                <!-- Viewer Modal -->
+                ${state.showViewerModal && state.currentDoc ? `
+                    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                        <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl animate-fade-in">
+                            <div class="bg-gradient-to-r from-blue-500 to-purple-500 text-white p-6 rounded-t-2xl flex justify-between items-center">
+                                <h3 class="text-xl font-bold">${state.currentDoc.title}</h3>
+                                <button onclick="closeViewer()" class="p-2 hover:bg-white hover:bg-opacity-20 rounded-lg transition-all">✖️</button>
+                            </div>
+                            
+                            <div class="p-8 overflow-y-auto flex-1">
+                                ${state.currentDoc.fileType === 'pdf' ? `
+                                    <iframe src="${state.currentDoc.content}" class="w-full h-full min-h-[600px] rounded-lg border-2" title="${state.currentDoc.title}"></iframe>
+                                ` : `
+                                    <pre class="whitespace-pre-wrap font-sans text-gray-700 leading-relaxed">${state.currentDoc.content}</pre>
+                                `}
+                            </div>
+                        </div>
+                    </div>
+                ` : ''}
+            `;
+        }
+
+        // Initialize
+        window.onload = loadData;
+    </script>
+</body>
+</html>

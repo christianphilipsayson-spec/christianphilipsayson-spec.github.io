@@ -24,6 +24,105 @@
             padding: 20px;
         }
 
+        /* Login Screen */
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .login-box h2 {
+            color: #667eea;
+            margin-bottom: 30px;
+        }
+
+        .login-box input {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1em;
+        }
+
+        .login-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 20px;
+            transition: transform 0.3s;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .error-message {
+            color: #dc3545;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Admin Controls */
+        .admin-controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 100;
+        }
+
+        .admin-btn {
+            background: rgba(255, 255, 255, 0.9);
+            color: #667eea;
+            border: 2px solid #667eea;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+
+        .admin-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .edit-mode-indicator {
+            background: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
         header {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
@@ -43,6 +142,10 @@
             flex-wrap: wrap;
         }
 
+        .profile-photo-container {
+            position: relative;
+        }
+
         .profile-photo {
             width: 180px;
             height: 180px;
@@ -57,6 +160,25 @@
             transform: scale(1.05);
         }
 
+        .photo-upload-btn {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: none;
+        }
+
+        .edit-mode .photo-upload-btn {
+            display: block;
+        }
+
         .profile-info {
             text-align: left;
             max-width: 600px;
@@ -68,6 +190,15 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 10px;
+        }
+
+        .editable {
+            position: relative;
+        }
+
+        .edit-mode .editable:hover {
+            outline: 2px dashed #667eea;
+            cursor: pointer;
         }
 
         .tagline {
@@ -152,21 +283,6 @@
             margin: 20px 0;
             max-height: 600px;
             overflow-y: auto;
-            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .document-viewer::-webkit-scrollbar {
-            width: 10px;
-        }
-
-        .document-viewer::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-
-        .document-viewer::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 10px;
         }
 
         .document-item {
@@ -176,6 +292,7 @@
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s;
+            position: relative;
         }
 
         .document-item:hover {
@@ -195,6 +312,39 @@
             line-height: 1.8;
         }
 
+        .delete-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: none;
+        }
+
+        .edit-mode .delete-btn {
+            display: block;
+        }
+
+        .add-document-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .edit-mode .add-document-btn {
+            display: inline-block;
+        }
+
         .photo-gallery {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -208,6 +358,7 @@
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s;
+            position: relative;
         }
 
         .photo-item:hover {
@@ -225,49 +376,13 @@
             color: white;
             font-size: 1.2em;
             margin-bottom: 10px;
+            object-fit: cover;
         }
 
         .photo-caption {
             text-align: center;
             color: #666;
             font-size: 0.9em;
-        }
-
-        .upload-section {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-        }
-
-        .upload-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 1em;
-            margin-right: 10px;
-        }
-
-        .upload-btn:hover {
-            opacity: 0.9;
-        }
-
-        input[type="text"], textarea {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border: 2px solid #e9ecef;
-            border-radius: 10px;
-            font-size: 1em;
-            font-family: inherit;
-        }
-
-        textarea {
-            min-height: 150px;
-            resize: vertical;
         }
 
         footer {
@@ -277,77 +392,136 @@
             margin-top: 30px;
         }
 
-        .watermark {
+        /* Modal for adding/editing content */
+        .modal {
+            display: none;
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 10px 20px;
-            border-radius: 10px;
-            font-size: 0.9em;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-content h3 {
             color: #667eea;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+        }
+
+        .modal-content input,
+        .modal-content textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1em;
+            font-family: inherit;
+        }
+
+        .modal-content textarea {
+            min-height: 200px;
+            resize: vertical;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .save-btn {
+            background: #28a745;
+            color: white;
+        }
+
+        .cancel-btn {
+            background: #6c757d;
+            color: white;
+        }
+
+        input[type="file"] {
+            display: none;
         }
     </style>
 </head>
 <body>
+    <!-- Login Screen -->
+    <div class="login-overlay" id="loginOverlay">
+        <div class="login-box">
+            <h2>🔒 Admin Login</h2>
+            <p style="color: #666; margin-bottom: 20px;">Enter password to edit content</p>
+            <input type="password" id="passwordInput" placeholder="Enter admin password" onkeypress="if(event.key === 'Enter') login()">
+            <button class="login-btn" onclick="login()">Login</button>
+            <p class="error-message" id="errorMessage">Incorrect password. Please try again.</p>
+            <p style="color: #999; font-size: 0.9em; margin-top: 20px;">Default password: admin123</p>
+        </div>
+    </div>
+
+    <!-- Admin Controls -->
+    <div class="admin-controls hidden" id="adminControls">
+        <button class="admin-btn" onclick="toggleEditMode()">
+            <span id="editModeText">✏️ Enable Edit Mode</span>
+        </button>
+        <button class="admin-btn" onclick="logout()">🚪 Logout</button>
+    </div>
+
     <div class="container">
         <header>
             <div class="profile-section">
-                <img src="profile.jpg" alt="Christian Philip" class="profile-photo" id="profilePhoto">
+                <div class="profile-photo-container">
+                    <img src="https://via.placeholder.com/180" alt="Christian Philip" class="profile-photo" id="profilePhoto">
+                    <input type="file" id="photoFileInput" accept="image/*" onchange="handlePhotoUpload(event)">
+                    <button class="photo-upload-btn" onclick="document.getElementById('photoFileInput').click()">📷</button>
+                </div>
                 <div class="profile-info">
-                    <h1>Christian Philip</h1>
-                    <p class="tagline">Professional Portfolio & Documents</p>
-                    <p class="bio" id="bioText">Welcome to my professional portfolio. I am passionate about learning, growth, and making meaningful contributions in my field. This space showcases my academic work, professional achievements, and journey of continuous development.</p>
+                    <h1 class="editable" onclick="editText(this, 'name')">Christian Philip</h1>
+                    <p class="tagline editable" onclick="editText(this, 'tagline')">Professional Portfolio & Documents</p>
+                    <p class="bio editable" onclick="editText(this, 'bio')">Welcome to my professional portfolio. I am passionate about learning, growth, and making meaningful contributions in my field. This space showcases my academic work, professional achievements, and journey of continuous development.</p>
                 </div>
             </div>
         </header>
 
         <nav>
-            <button class="nav-btn active" onclick="showSection('profile')">Edit Profile</button>
-            <button class="nav-btn" onclick="showSection('resume')">Resume</button>
+            <button class="nav-btn active" onclick="showSection('resume')">Resume</button>
             <button class="nav-btn" onclick="showSection('research')">Research Studies</button>
             <button class="nav-btn" onclick="showSection('letters')">Application Letters</button>
             <button class="nav-btn" onclick="showSection('achievements')">Achievements</button>
             <button class="nav-btn" onclick="showSection('photos')">Photos & Events</button>
         </nav>
 
-        <div id="profile" class="content-section active">
-            <h2>Edit Profile</h2>
-            <div class="upload-section">
-                <h3>Profile Photo</h3>
-                <p style="color: #666; margin-bottom: 15px;">Upload your profile photo to your GitHub repository and enter the filename below:</p>
-                <input type="text" id="photoFileName" placeholder="e.g., profile.jpg or images/myPhoto.png">
-                <button class="upload-btn" onclick="updateProfilePhoto()">Update Photo</button>
-                
-                <h3 style="margin-top: 30px;">Your Name</h3>
-                <input type="text" id="profileName" placeholder="Your Full Name" value="Christian Philip">
-                <button class="upload-btn" onclick="updateName()">Update Name</button>
-                
-                <h3 style="margin-top: 30px;">Tagline</h3>
-                <input type="text" id="profileTagline" placeholder="Your professional tagline" value="Professional Portfolio & Documents">
-                <button class="upload-btn" onclick="updateTagline()">Update Tagline</button>
-                
-                <h3 style="margin-top: 30px;">Bio / About Me</h3>
-                <textarea id="bioContent" placeholder="Write a brief introduction about yourself...">Welcome to my professional portfolio. I am passionate about learning, growth, and making meaningful contributions in my field. This space showcases my academic work, professional achievements, and journey of continuous development.</textarea>
-                <button class="upload-btn" onclick="updateBio()">Update Bio</button>
-                
-                <div style="margin-top: 20px; padding: 15px; background: #fff3cd; border-radius: 10px; color: #856404;">
-                    <strong>💡 Note:</strong> Changes made here are temporary. To make them permanent, update the HTML file in your GitHub repository and push the changes.
-                </div>
-            </div>
-        </div>
-
-        <div id="resume" class="content-section">
+        <div id="resume" class="content-section active">
             <h2>Resume / Curriculum Vitae</h2>
-            <div class="upload-section">
-                <h3>Add/Update Resume</h3>
-                <input type="text" id="resumeTitle" placeholder="Document Title (e.g., Resume 2025)">
-                <textarea id="resumeContent" placeholder="Paste your resume content here..."></textarea>
-                <button class="upload-btn" onclick="addDocument('resume')">Save Resume</button>
-            </div>
+            <button class="add-document-btn" onclick="openModal('resume')">+ Add Resume</button>
             <div class="document-viewer" id="resumeViewer">
                 <div class="document-item">
+                    <button class="delete-btn" onclick="deleteDocument(this)">🗑️ Delete</button>
                     <div class="document-title">Sample Resume</div>
                     <div class="document-content">Name: Christian Philip
 Email: contact@christianphilip.com
@@ -372,14 +546,10 @@ Available upon request</div>
 
         <div id="research" class="content-section">
             <h2>Research Studies</h2>
-            <div class="upload-section">
-                <h3>Add New Research</h3>
-                <input type="text" id="researchTitle" placeholder="Research Title">
-                <textarea id="researchContent" placeholder="Paste your research content here..."></textarea>
-                <button class="upload-btn" onclick="addDocument('research')">Save Research</button>
-            </div>
+            <button class="add-document-btn" onclick="openModal('research')">+ Add Research</button>
             <div class="document-viewer" id="researchViewer">
                 <div class="document-item">
+                    <button class="delete-btn" onclick="deleteDocument(this)">🗑️ Delete</button>
                     <div class="document-title">Sample Research Study</div>
                     <div class="document-content">Abstract: This is where your research abstract goes...
 
@@ -398,14 +568,10 @@ References: [Your references]</div>
 
         <div id="letters" class="content-section">
             <h2>Application Letters</h2>
-            <div class="upload-section">
-                <h3>Add New Letter</h3>
-                <input type="text" id="letterTitle" placeholder="Letter Title (e.g., Job Application - Company Name)">
-                <textarea id="letterContent" placeholder="Paste your application letter here..."></textarea>
-                <button class="upload-btn" onclick="addDocument('letter')">Save Letter</button>
-            </div>
+            <button class="add-document-btn" onclick="openModal('letter')">+ Add Letter</button>
             <div class="document-viewer" id="letterViewer">
                 <div class="document-item">
+                    <button class="delete-btn" onclick="deleteDocument(this)">🗑️ Delete</button>
                     <div class="document-title">Sample Application Letter</div>
                     <div class="document-content">Dear Hiring Manager,
 
@@ -421,14 +587,10 @@ Christian Philip</div>
 
         <div id="achievements" class="content-section">
             <h2>Achievements & Certifications</h2>
-            <div class="upload-section">
-                <h3>Add New Achievement</h3>
-                <input type="text" id="achievementTitle" placeholder="Achievement Title">
-                <textarea id="achievementContent" placeholder="Describe your achievement..."></textarea>
-                <button class="upload-btn" onclick="addDocument('achievement')">Save Achievement</button>
-            </div>
+            <button class="add-document-btn" onclick="openModal('achievement')">+ Add Achievement</button>
             <div class="document-viewer" id="achievementViewer">
                 <div class="document-item">
+                    <button class="delete-btn" onclick="deleteDocument(this)">🗑️ Delete</button>
                     <div class="document-title">Sample Achievement</div>
                     <div class="document-content">Certificate of Excellence - [Year]
 Awarded for outstanding performance in [field/subject]
@@ -440,36 +602,70 @@ Description: [Details about your achievement]</div>
 
         <div id="photos" class="content-section">
             <h2>Photos & Events</h2>
-            <div class="upload-section">
-                <h3>Add New Photo Event</h3>
-                <input type="text" id="photoCaption" placeholder="Photo Caption/Event Name">
-                <button class="upload-btn" onclick="addPhoto()">Add Photo Entry</button>
-            </div>
+            <button class="add-document-btn" onclick="openModal('photo')">+ Add Photo</button>
             <div class="photo-gallery" id="photoGallery">
                 <div class="photo-item">
+                    <button class="delete-btn" onclick="deleteDocument(this)">🗑️ Delete</button>
                     <div class="photo-placeholder">Sample Event 1</div>
                     <div class="photo-caption">Orientation Day 2025</div>
                 </div>
                 <div class="photo-item">
+                    <button class="delete-btn" onclick="deleteDocument(this)">🗑️ Delete</button>
                     <div class="photo-placeholder">Sample Event 2</div>
                     <div class="photo-caption">Graduation Ceremony</div>
-                </div>
-                <div class="photo-item">
-                    <div class="photo-placeholder">Sample Event 3</div>
-                    <div class="photo-caption">Achievement Award</div>
                 </div>
             </div>
         </div>
 
         <footer>
             <p>&copy; 2025 Christian Philip. All rights reserved.</p>
-            <p>This portfolio is automatically updated via GitHub & Netlify</p>
+            <p>Secure Portfolio Management System</p>
         </footer>
     </div>
 
-    <div class="watermark">🚀 Auto-Updated Portfolio</div>
+    <!-- Modal for adding content -->
+    <div class="modal" id="contentModal">
+        <div class="modal-content">
+            <h3 id="modalTitle">Add New Content</h3>
+            <input type="text" id="modalTitleInput" placeholder="Title">
+            <textarea id="modalContentInput" placeholder="Content"></textarea>
+            <input type="file" id="modalFileInput" accept="image/*" style="display: block; margin: 10px 0;">
+            <div class="modal-buttons">
+                <button class="modal-btn save-btn" onclick="saveContent()">Save</button>
+                <button class="modal-btn cancel-btn" onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
 
     <script>
+        let isEditMode = false;
+        let currentSection = '';
+        const ADMIN_PASSWORD = 'admin123'; // Change this to your desired password
+
+        function login() {
+            const password = document.getElementById('passwordInput').value;
+            if (password === ADMIN_PASSWORD) {
+                document.getElementById('loginOverlay').classList.add('hidden');
+                document.getElementById('adminControls').classList.remove('hidden');
+                document.getElementById('errorMessage').style.display = 'none';
+            } else {
+                document.getElementById('errorMessage').style.display = 'block';
+            }
+        }
+
+        function logout() {
+            document.getElementById('loginOverlay').classList.remove('hidden');
+            document.getElementById('adminControls').classList.add('hidden');
+            document.getElementById('passwordInput').value = '';
+            if (isEditMode) toggleEditMode();
+        }
+
+        function toggleEditMode() {
+            isEditMode = !isEditMode;
+            document.body.classList.toggle('edit-mode');
+            document.getElementById('editModeText').textContent = isEditMode ? '👁️ View Mode' : '✏️ Enable Edit Mode';
+        }
+
         function showSection(section) {
             const sections = document.querySelectorAll('.content-section');
             const buttons = document.querySelectorAll('.nav-btn');
@@ -481,120 +677,125 @@ Description: [Details about your achievement]</div>
             event.target.classList.add('active');
         }
 
-        function updateProfilePhoto() {
-            const fileName = document.getElementById('photoFileName').value;
-            if (!fileName) {
-                alert('Please enter a photo filename!');
-                return;
+        function handlePhotoUpload(event) {
+            if (!isEditMode) return;
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profilePhoto').src = e.target.result;
+                    alert('Profile photo updated! Changes are saved temporarily.');
+                }
+                reader.readAsDataURL(file);
             }
-            
-            document.getElementById('profilePhoto').src = fileName;
-            alert('Photo updated! Remember to upload "' + fileName + '" to your GitHub repo and commit the HTML changes.');
         }
 
-        function updateName() {
-            const name = document.getElementById('profileName').value;
-            if (!name) {
-                alert('Please enter your name!');
-                return;
+        function editText(element, type) {
+            if (!isEditMode) return;
+            const currentText = element.textContent;
+            const newText = prompt(`Edit ${type}:`, currentText);
+            if (newText !== null && newText.trim() !== '') {
+                element.textContent = newText;
+                alert('Changes saved temporarily!');
             }
-            
-            document.querySelector('h1').textContent = name;
-            alert('Name updated! Remember to commit this change to GitHub to make it permanent.');
         }
 
-        function updateTagline() {
-            const tagline = document.getElementById('profileTagline').value;
-            if (!tagline) {
-                alert('Please enter a tagline!');
-                return;
-            }
+        function openModal(section) {
+            if (!isEditMode) return;
+            currentSection = section;
+            document.getElementById('contentModal').classList.add('active');
+            document.getElementById('modalTitle').textContent = `Add New ${section.charAt(0).toUpperCase() + section.slice(1)}`;
+            document.getElementById('modalTitleInput').value = '';
+            document.getElementById('modalContentInput').value = '';
             
-            document.querySelector('.tagline').textContent = tagline;
-            alert('Tagline updated! Remember to commit this change to GitHub to make it permanent.');
+            // Show/hide file input based on section
+            if (section === 'photo') {
+                document.getElementById('modalFileInput').style.display = 'block';
+                document.getElementById('modalContentInput').style.display = 'none';
+            } else {
+                document.getElementById('modalFileInput').style.display = 'none';
+                document.getElementById('modalContentInput').style.display = 'block';
+            }
         }
 
-        function updateBio() {
-            const bio = document.getElementById('bioContent').value;
-            if (!bio) {
-                alert('Please enter your bio!');
-                return;
-            }
-            
-            document.getElementById('bioText').textContent = bio;
-            alert('Bio updated! Remember to commit this change to GitHub to make it permanent.');
+        function closeModal() {
+            document.getElementById('contentModal').classList.remove('active');
         }
 
-        function addDocument(type) {
-            let titleId, contentId, viewerId;
+        function saveContent() {
+            const title = document.getElementById('modalTitleInput').value;
+            const content = document.getElementById('modalContentInput').value;
+            const fileInput = document.getElementById('modalFileInput');
             
-            switch(type) {
-                case 'resume':
-                    titleId = 'resumeTitle';
-                    contentId = 'resumeContent';
-                    viewerId = 'resumeViewer';
-                    break;
-                case 'research':
-                    titleId = 'researchTitle';
-                    contentId = 'researchContent';
-                    viewerId = 'researchViewer';
-                    break;
-                case 'letter':
-                    titleId = 'letterTitle';
-                    contentId = 'letterContent';
-                    viewerId = 'letterViewer';
-                    break;
-                case 'achievement':
-                    titleId = 'achievementTitle';
-                    contentId = 'achievementContent';
-                    viewerId = 'achievementViewer';
-                    break;
-            }
-            
-            const title = document.getElementById(titleId).value;
-            const content = document.getElementById(contentId).value;
-            
-            if (!title || !content) {
-                alert('Please fill in both title and content!');
+            if (!title) {
+                alert('Please enter a title!');
                 return;
             }
             
+            if (currentSection === 'photo') {
+                if (fileInput.files.length === 0) {
+                    alert('Please select an image!');
+                    return;
+                }
+                const file = fileInput.files[0];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    addPhotoItem(title, e.target.result);
+                }
+                reader.readAsDataURL(file);
+            } else {
+                if (!content) {
+                    alert('Please enter content!');
+                    return;
+                }
+                addDocumentItem(currentSection, title, content);
+            }
+            
+            closeModal();
+        }
+
+        function addDocumentItem(section, title, content) {
+            const viewerId = section + 'Viewer';
             const viewer = document.getElementById(viewerId);
+            
             const newDoc = document.createElement('div');
             newDoc.className = 'document-item';
             newDoc.innerHTML = `
+                <button class="delete-btn" onclick="deleteDocument(this)">🗑️ Delete</button>
                 <div class="document-title">${title}</div>
                 <div class="document-content">${content}</div>
             `;
             
             viewer.insertBefore(newDoc, viewer.firstChild);
-            
-            document.getElementById(titleId).value = '';
-            document.getElementById(contentId).value = '';
-            
-            alert('Document added successfully! Remember to commit this to GitHub to make it permanent.');
+            alert('Document added successfully!');
         }
 
-        function addPhoto() {
-            const caption = document.getElementById('photoCaption').value;
-            
-            if (!caption) {
-                alert('Please enter a caption!');
-                return;
-            }
-            
+        function addPhotoItem(caption, imageData) {
             const gallery = document.getElementById('photoGallery');
+            
             const newPhoto = document.createElement('div');
             newPhoto.className = 'photo-item';
             newPhoto.innerHTML = `
-                <div class="photo-placeholder">${caption}</div>
+                <button class="delete-btn" onclick="deleteDocument(this)">🗑️ Delete</button>
+                <img src="${imageData}" class="photo-placeholder" style="object-fit: cover;">
                 <div class="photo-caption">${caption}</div>
             `;
             
             gallery.insertBefore(newPhoto, gallery.firstChild);
-            document.getElementById('photoCaption').value = '';
-            
-            alert('Photo entry added! Remember to commit this to GitHub.');
+            alert('Photo added successfully!');
+        }
+
+        function deleteDocument(btn) {
+            if (!isEditMode) return;
+            if (confirm('Are you sure you want to delete this item?')) {
+                btn.parentElement.remove();
+                alert('Item deleted!');
+            }
+        }
+
+        // Show login on page load
+        window.onload = function() {
+            document.getElementById('loginOverlay').classList.remove('hidden');
         }
     </script>
 </body>

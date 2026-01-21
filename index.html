@@ -321,7 +321,10 @@
 
     <div class="container">
         <header>
-            <img src="https://via.placeholder.com/150" class="profile-pic" id="profilePic" alt="Profile">
+            <div style="position: relative; display: inline-block;">
+                <img src="https://via.placeholder.com/150" class="profile-pic" id="profilePic" alt="Profile">
+                <button class="add-btn" onclick="uploadProfilePic()" style="position: absolute; bottom: 5px; right: 5px; border-radius: 50%; padding: 8px 12px; margin: 0;">📷</button>
+            </div>
             <h1 id="name">Christian Philip</h1>
             <p class="tagline" id="tagline">Professional Portfolio & Documents</p>
             <p id="bio">Welcome to my professional portfolio. I showcase my academic work, professional achievements, and journey of continuous development.</p>
@@ -552,6 +555,30 @@
                 const filtered = photos.filter(p => p.caption !== caption);
                 localStorage.setItem('photos', JSON.stringify(filtered));
             }
+        }
+
+        function uploadProfilePic() {
+            if (!isEditMode) return;
+            
+            if (!widget) {
+                widget = cloudinary.createUploadWidget({
+                    cloudName: CLOUD_NAME,
+                    uploadPreset: UPLOAD_PRESET,
+                    sources: ['local', 'camera'],
+                    multiple: false,
+                    cropping: true,
+                    croppingAspectRatio: 1,
+                    folder: 'portfolio/profile'
+                }, (error, result) => {
+                    if (result && result.event === "success") {
+                        const url = result.info.secure_url;
+                        document.getElementById('profilePic').src = url;
+                        localStorage.setItem('profilePic', url);
+                        alert('Profile photo updated!');
+                    }
+                });
+            }
+            widget.open();
         }
     </script>
 </body>

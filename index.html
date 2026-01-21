@@ -24,18 +24,49 @@
             padding: 20px;
         }
 
-        /* Login Screen */
-        .login-overlay {
+        /* Admin Button - Hidden by default */
+        .admin-access-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            font-size: 14px;
+            transition: transform 0.3s;
+            z-index: 100;
+            font-weight: bold;
+        }
+
+        .admin-access-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.5);
+        }
+
+        .admin-access-btn.hidden {
+            display: none;
+        }
+
+        /* Login Modal */
+        .login-modal {
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.8);
-            display: flex;
+            z-index: 1000;
             align-items: center;
             justify-content: center;
-            z-index: 1000;
+        }
+
+        .login-modal.active {
+            display: flex;
         }
 
         .login-box {
@@ -85,8 +116,15 @@
             display: none;
         }
 
-        .hidden {
-            display: none !important;
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
         }
 
         /* Admin Controls */
@@ -94,9 +132,13 @@
             position: fixed;
             top: 20px;
             right: 20px;
-            display: flex;
+            display: none;
             gap: 10px;
             z-index: 100;
+        }
+
+        .admin-controls.active {
+            display: flex;
         }
 
         .admin-btn {
@@ -113,14 +155,6 @@
         .admin-btn:hover {
             background: #667eea;
             color: white;
-        }
-
-        .edit-mode-indicator {
-            background: #28a745;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 10px;
-            font-weight: bold;
         }
 
         header {
@@ -275,41 +309,63 @@
             padding-bottom: 10px;
         }
 
-        .document-viewer {
-            background: #f8f9fa;
+        /* Prevent text selection and right-click on documents */
+        .pdf-viewer {
+            background: white;
             border: 2px solid #e9ecef;
             border-radius: 15px;
-            padding: 30px;
+            padding: 40px;
             margin: 20px 0;
-            max-height: 600px;
-            overflow-y: auto;
-        }
-
-        .document-item {
-            background: white;
-            padding: 25px;
-            margin-bottom: 20px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s;
+            min-height: 600px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
             position: relative;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
         }
 
-        .document-item:hover {
-            transform: translateX(5px);
+        .pdf-document {
+            background: #fafafa;
+            padding: 60px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            font-family: 'Times New Roman', serif;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
         }
 
-        .document-title {
-            font-size: 1.5em;
-            color: #764ba2;
-            margin-bottom: 10px;
+        .pdf-title {
+            font-size: 2em;
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
             font-weight: bold;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 15px;
+            user-select: none;
         }
 
-        .document-content {
-            color: #555;
+        .pdf-content {
+            color: #333;
             white-space: pre-wrap;
             line-height: 1.8;
+            font-size: 1.1em;
+            user-select: none;
+        }
+
+        .pdf-watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 5em;
+            color: rgba(102, 126, 234, 0.05);
+            pointer-events: none;
+            user-select: none;
         }
 
         .delete-btn {
@@ -365,6 +421,14 @@
             transform: scale(1.05);
         }
 
+        .photo-image {
+            width: 100%;
+            height: 200px;
+            border-radius: 10px;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+
         .photo-placeholder {
             width: 100%;
             height: 200px;
@@ -376,7 +440,6 @@
             color: white;
             font-size: 1.2em;
             margin-bottom: 10px;
-            object-fit: cover;
         }
 
         .photo-caption {
@@ -392,7 +455,7 @@
             margin-top: 30px;
         }
 
-        /* Modal for adding/editing content */
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -418,6 +481,7 @@
             width: 90%;
             max-height: 80vh;
             overflow-y: auto;
+            position: relative;
         }
 
         .modal-content h3 {
@@ -437,7 +501,7 @@
         }
 
         .modal-content textarea {
-            min-height: 200px;
+            min-height: 300px;
             resize: vertical;
         }
 
@@ -467,27 +531,33 @@
         }
 
         input[type="file"] {
-            display: none;
+            display: block;
+            margin: 10px 0;
         }
     </style>
 </head>
 <body>
-    <!-- Login Screen -->
-    <div class="login-overlay" id="loginOverlay">
+    <!-- Admin Access Button (Only visible to you) -->
+    <button class="admin-access-btn" id="adminAccessBtn" onclick="openLogin()">
+        🔑 Admin Panel
+    </button>
+
+    <!-- Login Modal -->
+    <div class="login-modal" id="loginModal">
         <div class="login-box">
-            <h2>🔒 Admin Login</h2>
-            <p style="color: #666; margin-bottom: 20px;">Enter password to edit content</p>
-            <input type="password" id="passwordInput" placeholder="Enter admin password" onkeypress="if(event.key === 'Enter') login()">
+            <button class="close-modal" onclick="closeLogin()">×</button>
+            <h2>🔐 Admin Login</h2>
+            <p style="color: #666; margin-bottom: 20px;">Enter your password to manage content</p>
+            <input type="password" id="passwordInput" placeholder="Enter password" onkeypress="if(event.key === 'Enter') login()">
             <button class="login-btn" onclick="login()">Login</button>
             <p class="error-message" id="errorMessage">Incorrect password. Please try again.</p>
-            <p style="color: #999; font-size: 0.9em; margin-top: 20px;">Default password: admin123</p>
         </div>
     </div>
 
     <!-- Admin Controls -->
-    <div class="admin-controls hidden" id="adminControls">
+    <div class="admin-controls" id="adminControls">
         <button class="admin-btn" onclick="toggleEditMode()">
-            <span id="editModeText">✏️ Enable Edit Mode</span>
+            <span id="editModeText">✏️ Edit Mode</span>
         </button>
         <button class="admin-btn" onclick="logout()">🚪 Logout</button>
     </div>
@@ -497,13 +567,13 @@
             <div class="profile-section">
                 <div class="profile-photo-container">
                     <img src="https://via.placeholder.com/180" alt="Christian Philip" class="profile-photo" id="profilePhoto">
-                    <input type="file" id="photoFileInput" accept="image/*" onchange="handlePhotoUpload(event)">
+                    <input type="file" id="photoFileInput" accept="image/*" onchange="handlePhotoUpload(event)" style="display: none;">
                     <button class="photo-upload-btn" onclick="document.getElementById('photoFileInput').click()">📷</button>
                 </div>
                 <div class="profile-info">
-                    <h1 class="editable" onclick="editText(this, 'name')">Christian Philip</h1>
-                    <p class="tagline editable" onclick="editText(this, 'tagline')">Professional Portfolio & Documents</p>
-                    <p class="bio editable" onclick="editText(this, 'bio')">Welcome to my professional portfolio. I am passionate about learning, growth, and making meaningful contributions in my field. This space showcases my academic work, professional achievements, and journey of continuous development.</p>
+                    <h1 class="editable" onclick="editText(this)">Christian Philip</h1>
+                    <p class="tagline editable" onclick="editText(this)">Professional Portfolio & Documents</p>
+                    <p class="bio editable" onclick="editText(this)">Welcome to my professional portfolio. I am passionate about learning, growth, and making meaningful contributions in my field. This space showcases my academic work, professional achievements, and journey of continuous development.</p>
                 </div>
             </div>
         </header>
@@ -519,24 +589,37 @@
         <div id="resume" class="content-section active">
             <h2>Resume / Curriculum Vitae</h2>
             <button class="add-document-btn" onclick="openModal('resume')">+ Add Resume</button>
-            <div class="document-viewer" id="resumeViewer">
-                <div class="document-item">
-                    <button class="delete-btn" onclick="deleteDocument(this)">🗑️ Delete</button>
-                    <div class="document-title">Sample Resume</div>
-                    <div class="document-content">Name: Christian Philip
+            <div class="pdf-viewer" id="resumeViewer">
+                <div class="pdf-watermark">PORTFOLIO</div>
+                <div class="pdf-document">
+                    <button class="delete-btn" onclick="deleteDocument(this)">Delete</button>
+                    <div class="pdf-title">CURRICULUM VITAE</div>
+                    <div class="pdf-content">CHRISTIAN PHILIP
+
+Contact Information:
 Email: contact@christianphilip.com
 Phone: +63 XXX XXX XXXX
+Location: Consolacion, Central Visayas, Philippines
 
 EDUCATION
-[Your School/University]
-[Degree/Program]
-[Year]
+Bachelor of Science in [Your Program]
+[Your University Name]
+[Year - Year]
 
-EXPERIENCE
-[Add your work experience here]
+PROFESSIONAL EXPERIENCE
+[Job Title]
+[Company Name] | [Year - Year]
+• Key responsibility 1
+• Key responsibility 2
+• Key achievement
 
 SKILLS
-[List your skills]
+• Technical Skills
+• Soft Skills
+• Languages
+
+CERTIFICATIONS
+[Certification Name] - [Year]
 
 REFERENCES
 Available upon request</div>
@@ -547,21 +630,39 @@ Available upon request</div>
         <div id="research" class="content-section">
             <h2>Research Studies</h2>
             <button class="add-document-btn" onclick="openModal('research')">+ Add Research</button>
-            <div class="document-viewer" id="researchViewer">
-                <div class="document-item">
-                    <button class="delete-btn" onclick="deleteDocument(this)">🗑️ Delete</button>
-                    <div class="document-title">Sample Research Study</div>
-                    <div class="document-content">Abstract: This is where your research abstract goes...
+            <div class="pdf-viewer" id="researchViewer">
+                <div class="pdf-watermark">RESEARCH</div>
+                <div class="pdf-document">
+                    <button class="delete-btn" onclick="deleteDocument(this)">Delete</button>
+                    <div class="pdf-title">Sample Research Study Title</div>
+                    <div class="pdf-content">ABSTRACT
 
-Introduction: [Your introduction]
+This research study explores [topic]. The study aims to investigate the relationship between [variables] and their impact on [outcome].
 
-Methodology: [Your methodology]
+INTRODUCTION
 
-Results: [Your results]
+The field of [subject] has seen significant developments in recent years. This study addresses the gap in knowledge regarding [specific issue].
 
-Conclusion: [Your conclusion]
+METHODOLOGY
 
-References: [Your references]</div>
+This research employs a [qualitative/quantitative] approach using [methods]. Data was collected through [data collection methods] from [sample description].
+
+RESULTS
+
+The findings indicate that [key finding 1]. Additionally, the data shows [key finding 2]. Statistical analysis reveals [statistical result].
+
+DISCUSSION
+
+These results suggest that [interpretation]. The implications of this study are significant for [field/application].
+
+CONCLUSION
+
+In conclusion, this research demonstrates [main conclusion]. Future studies should explore [recommendations].
+
+REFERENCES
+
+[1] Author, A. (Year). Title of work. Journal Name.
+[2] Author, B. (Year). Title of work. Publisher.</div>
                 </div>
             </div>
         </div>
@@ -569,17 +670,36 @@ References: [Your references]</div>
         <div id="letters" class="content-section">
             <h2>Application Letters</h2>
             <button class="add-document-btn" onclick="openModal('letter')">+ Add Letter</button>
-            <div class="document-viewer" id="letterViewer">
-                <div class="document-item">
-                    <button class="delete-btn" onclick="deleteDocument(this)">🗑️ Delete</button>
-                    <div class="document-title">Sample Application Letter</div>
-                    <div class="document-content">Dear Hiring Manager,
+            <div class="pdf-viewer" id="letterViewer">
+                <div class="pdf-watermark">OFFICIAL</div>
+                <div class="pdf-document">
+                    <button class="delete-btn" onclick="deleteDocument(this)">Delete</button>
+                    <div class="pdf-title">APPLICATION LETTER</div>
+                    <div class="pdf-content">Christian Philip
+Consolacion, Central Visayas, Philippines
+contact@christianphilip.com
++63 XXX XXX XXXX
 
-I am writing to express my interest in [position]...
+Date: [Current Date]
 
-[Your letter content]
+[Recipient Name]
+[Company Name]
+[Company Address]
+
+Dear [Hiring Manager/Name],
+
+I am writing to express my strong interest in the [Position Title] position at [Company Name]. With my background in [field/area] and passion for [relevant skill/interest], I am confident that I would be a valuable addition to your team.
+
+During my time at [Previous Experience/Education], I developed strong skills in [relevant skills]. I successfully [achievement or project], which resulted in [positive outcome]. This experience has prepared me well for the challenges and responsibilities of the [Position Title] role.
+
+I am particularly drawn to [Company Name] because of [specific reason related to company]. Your commitment to [company value/mission] aligns perfectly with my professional goals and values.
+
+I am excited about the opportunity to contribute to [Company Name]'s continued success. I am confident that my skills, enthusiasm, and dedication make me an ideal candidate for this position.
+
+Thank you for considering my application. I look forward to the opportunity to discuss how I can contribute to your team.
 
 Sincerely,
+
 Christian Philip</div>
                 </div>
             </div>
@@ -588,14 +708,36 @@ Christian Philip</div>
         <div id="achievements" class="content-section">
             <h2>Achievements & Certifications</h2>
             <button class="add-document-btn" onclick="openModal('achievement')">+ Add Achievement</button>
-            <div class="document-viewer" id="achievementViewer">
-                <div class="document-item">
-                    <button class="delete-btn" onclick="deleteDocument(this)">🗑️ Delete</button>
-                    <div class="document-title">Sample Achievement</div>
-                    <div class="document-content">Certificate of Excellence - [Year]
-Awarded for outstanding performance in [field/subject]
+            <div class="pdf-viewer" id="achievementViewer">
+                <div class="pdf-watermark">CERTIFIED</div>
+                <div class="pdf-document">
+                    <button class="delete-btn" onclick="deleteDocument(this)">Delete</button>
+                    <div class="pdf-title">CERTIFICATE OF ACHIEVEMENT</div>
+                    <div class="pdf-content">This certifies that
 
-Description: [Details about your achievement]</div>
+CHRISTIAN PHILIP
+
+has successfully demonstrated outstanding performance and achievement in
+
+[Area of Achievement]
+
+Awarded on: [Date]
+Certificate ID: [ID Number]
+
+DETAILS:
+
+This recognition is awarded for exceptional work in [specific area]. The recipient has shown remarkable dedication, skill, and commitment to excellence.
+
+Key Accomplishments:
+• Achievement 1
+• Achievement 2
+• Achievement 3
+
+This certificate represents the culmination of [duration] of hard work and dedication to [field/subject].
+
+Authorized by:
+[Authority Name]
+[Position/Title]</div>
                 </div>
             </div>
         </div>
@@ -605,13 +747,13 @@ Description: [Details about your achievement]</div>
             <button class="add-document-btn" onclick="openModal('photo')">+ Add Photo</button>
             <div class="photo-gallery" id="photoGallery">
                 <div class="photo-item">
-                    <button class="delete-btn" onclick="deleteDocument(this)">🗑️ Delete</button>
-                    <div class="photo-placeholder">Sample Event 1</div>
-                    <div class="photo-caption">Orientation Day 2025</div>
+                    <button class="delete-btn" onclick="deleteDocument(this)">Delete</button>
+                    <div class="photo-placeholder">Orientation 2025</div>
+                    <div class="photo-caption">University Orientation Day</div>
                 </div>
                 <div class="photo-item">
-                    <button class="delete-btn" onclick="deleteDocument(this)">🗑️ Delete</button>
-                    <div class="photo-placeholder">Sample Event 2</div>
+                    <button class="delete-btn" onclick="deleteDocument(this)">Delete</button>
+                    <div class="photo-placeholder">Graduation</div>
                     <div class="photo-caption">Graduation Ceremony</div>
                 </div>
             </div>
@@ -619,17 +761,18 @@ Description: [Details about your achievement]</div>
 
         <footer>
             <p>&copy; 2025 Christian Philip. All rights reserved.</p>
-            <p>Secure Portfolio Management System</p>
+            <p>Professional Portfolio • Secure Document Management</p>
         </footer>
     </div>
 
-    <!-- Modal for adding content -->
+    <!-- Modal -->
     <div class="modal" id="contentModal">
         <div class="modal-content">
+            <button class="close-modal" onclick="closeModal()">×</button>
             <h3 id="modalTitle">Add New Content</h3>
-            <input type="text" id="modalTitleInput" placeholder="Title">
-            <textarea id="modalContentInput" placeholder="Content"></textarea>
-            <input type="file" id="modalFileInput" accept="image/*" style="display: block; margin: 10px 0;">
+            <input type="text" id="modalTitleInput" placeholder="Document Title">
+            <textarea id="modalContentInput" placeholder="Paste your content here..."></textarea>
+            <input type="file" id="modalFileInput" accept="image/*">
             <div class="modal-buttons">
                 <button class="modal-btn save-btn" onclick="saveContent()">Save</button>
                 <button class="modal-btn cancel-btn" onclick="closeModal()">Cancel</button>
@@ -639,31 +782,47 @@ Description: [Details about your achievement]</div>
 
     <script>
         let isEditMode = false;
+        let isLoggedIn = false;
         let currentSection = '';
-        const ADMIN_PASSWORD = 'admin123'; // Change this to your desired password
+        const ADMIN_PASSWORD = 'admin123';
+
+        function openLogin() {
+            document.getElementById('loginModal').classList.add('active');
+        }
+
+        function closeLogin() {
+            document.getElementById('loginModal').classList.remove('active');
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('errorMessage').style.display = 'none';
+        }
 
         function login() {
             const password = document.getElementById('passwordInput').value;
             if (password === ADMIN_PASSWORD) {
-                document.getElementById('loginOverlay').classList.add('hidden');
-                document.getElementById('adminControls').classList.remove('hidden');
+                isLoggedIn = true;
+                document.getElementById('loginModal').classList.remove('active');
+                document.getElementById('adminControls').classList.add('active');
+                document.getElementById('adminAccessBtn').classList.add('hidden');
                 document.getElementById('errorMessage').style.display = 'none';
+                document.getElementById('passwordInput').value = '';
+                alert('Welcome! You can now edit your website. Click "Edit Mode" to start making changes.');
             } else {
                 document.getElementById('errorMessage').style.display = 'block';
             }
         }
 
         function logout() {
-            document.getElementById('loginOverlay').classList.remove('hidden');
-            document.getElementById('adminControls').classList.add('hidden');
-            document.getElementById('passwordInput').value = '';
+            isLoggedIn = false;
             if (isEditMode) toggleEditMode();
+            document.getElementById('adminControls').classList.remove('active');
+            document.getElementById('adminAccessBtn').classList.remove('hidden');
         }
 
         function toggleEditMode() {
+            if (!isLoggedIn) return;
             isEditMode = !isEditMode;
             document.body.classList.toggle('edit-mode');
-            document.getElementById('editModeText').textContent = isEditMode ? '👁️ View Mode' : '✏️ Enable Edit Mode';
+            document.getElementById('editModeText').textContent = isEditMode ? '👁️ View' : '✏️ Edit Mode';
         }
 
         function showSection(section) {
@@ -684,19 +843,17 @@ Description: [Details about your achievement]</div>
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     document.getElementById('profilePhoto').src = e.target.result;
-                    alert('Profile photo updated! Changes are saved temporarily.');
                 }
                 reader.readAsDataURL(file);
             }
         }
 
-        function editText(element, type) {
+        function editText(element) {
             if (!isEditMode) return;
             const currentText = element.textContent;
-            const newText = prompt(`Edit ${type}:`, currentText);
+            const newText = prompt('Edit:', currentText);
             if (newText !== null && newText.trim() !== '') {
                 element.textContent = newText;
-                alert('Changes saved temporarily!');
             }
         }
 
@@ -704,11 +861,10 @@ Description: [Details about your achievement]</div>
             if (!isEditMode) return;
             currentSection = section;
             document.getElementById('contentModal').classList.add('active');
-            document.getElementById('modalTitle').textContent = `Add New ${section.charAt(0).toUpperCase() + section.slice(1)}`;
+            document.getElementById('modalTitle').textContent = `Add ${section.charAt(0).toUpperCase() + section.slice(1)}`;
             document.getElementById('modalTitleInput').value = '';
             document.getElementById('modalContentInput').value = '';
             
-            // Show/hide file input based on section
             if (section === 'photo') {
                 document.getElementById('modalFileInput').style.display = 'block';
                 document.getElementById('modalContentInput').style.display = 'none';
@@ -728,13 +884,13 @@ Description: [Details about your achievement]</div>
             const fileInput = document.getElementById('modalFileInput');
             
             if (!title) {
-                alert('Please enter a title!');
+                alert('Please enter a title');
                 return;
             }
             
             if (currentSection === 'photo') {
                 if (fileInput.files.length === 0) {
-                    alert('Please select an image!');
+                    alert('Please select an image');
                     return;
                 }
                 const file = fileInput.files[0];
@@ -745,29 +901,28 @@ Description: [Details about your achievement]</div>
                 reader.readAsDataURL(file);
             } else {
                 if (!content) {
-                    alert('Please enter content!');
+                    alert('Please enter content');
                     return;
                 }
-                addDocumentItem(currentSection, title, content);
+                addPDFDocument(currentSection, title, content);
             }
             
             closeModal();
         }
 
-        function addDocumentItem(section, title, content) {
+        function addPDFDocument(section, title, content) {
             const viewerId = section + 'Viewer';
             const viewer = document.getElementById(viewerId);
             
             const newDoc = document.createElement('div');
-            newDoc.className = 'document-item';
+            newDoc.className = 'pdf-document';
             newDoc.innerHTML = `
-                <button class="delete-btn" onclick="deleteDocument(this)">🗑️ Delete</button>
-                <div class="document-title">${title}</div>
-                <div class="document-content">${content}</div>
+                <button class="delete-btn" onclick="deleteDocument(this)">Delete</button>
+                <div class="pdf-title">${title}</div>
+                <div class="pdf-content">${content}</div>
             `;
             
-            viewer.insertBefore(newDoc, viewer.firstChild);
-            alert('Document added successfully!');
+            viewer.appendChild(newDoc);
         }
 
         function addPhotoItem(caption, imageData) {
@@ -776,27 +931,44 @@ Description: [Details about your achievement]</div>
             const newPhoto = document.createElement('div');
             newPhoto.className = 'photo-item';
             newPhoto.innerHTML = `
-                <button class="delete-btn" onclick="deleteDocument(this)">🗑️ Delete</button>
-                <img src="${imageData}" class="photo-placeholder" style="object-fit: cover;">
+                <button class="delete-btn" onclick="deleteDocument(this)">Delete</button>
+                <img src="${imageData}" class="photo-image">
                 <div class="photo-caption">${caption}</div>
             `;
             
-            gallery.insertBefore(newPhoto, gallery.firstChild);
-            alert('Photo added successfully!');
+            gallery.appendChild(newPhoto);
         }
 
         function deleteDocument(btn) {
             if (!isEditMode) return;
-            if (confirm('Are you sure you want to delete this item?')) {
+            if (confirm('Delete this item?')) {
                 btn.parentElement.remove();
-                alert('Item deleted!');
             }
         }
 
-        // Show login on page load
-        window.onload = function() {
-            document.getElementById('loginOverlay').classList.remove('hidden');
-        }
+        // Disable right-click on PDF documents
+        document.addEventListener('DOMContentLoaded', function() {
+            const pdfViewers = document.querySelectorAll('.pdf-viewer, .pdf-document');
+            pdfViewers.forEach(viewer => {
+                viewer.addEventListener('contextmenu', function(e) {
+                    if (!isEditMode) {
+                        e.preventDefault();
+                        return false;
+                    }
+                });
+            });
+        });
+
+        // Prevent copying text from documents
+        document.addEventListener('copy', function(e) {
+            if (!isEditMode) {
+                const selection = window.getSelection().toString();
+                if (selection) {
+                    e.preventDefault();
+                    alert('Content is protected and cannot be copied.');
+                }
+            }
+        });
     </script>
 </body>
 </html>
